@@ -27,23 +27,11 @@ export const HeroSection: React.FC = () => {
 
             {/* Main Headline */}
             <h1 className="text-4xl sm:text-5xl lg:text-[54px] font-extrabold text-[#0B132B] tracking-tight leading-[1.15]">
-              {language === 'hi' ? (
-                <>
-                  लेबर चौक से <br />
-                  <span className="relative text-[#EAA228] inline-block mt-1">
-                    डिजिटल पहचान तक
-                    <span className="absolute -bottom-1 left-0 w-full h-[5px] bg-[#EAA228] rounded-full" />
-                  </span>
-                </>
-              ) : (
-                <>
-                  From Labour Chowk to <br />
-                  <span className="relative text-[#EAA228] inline-block mt-1">
-                    Digital Identity
-                    <span className="absolute -bottom-1 left-0 w-full h-[5px] bg-[#EAA228] rounded-full" />
-                  </span>
-                </>
-              )}
+              {t('heroHeadingPart1', 'From Labour Chowk to')} <br />
+              <span className="relative text-[#EAA228] inline-block mt-1">
+                {t('heroHeadingPart2', 'Digital Identity')}
+                <span className="absolute -bottom-1 left-0 w-full h-[5px] bg-[#EAA228] rounded-full" />
+              </span>
             </h1>
 
             {/* Description Paragraph */}
@@ -116,7 +104,7 @@ export const HeroSection: React.FC = () => {
                 <div className="absolute top-3 left-3 z-20">
                   <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 backdrop-blur-md border border-slate-200/80 text-[11px] font-bold text-slate-800 shadow-sm">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span>Verified Profiles • 100% सत्यापित प्रोफ़ाइल</span>
+                    <span>Verified Profiles • 100% Verifiable</span>
                   </div>
                 </div>
 

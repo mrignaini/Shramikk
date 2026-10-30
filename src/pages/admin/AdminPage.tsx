@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Settings,
@@ -22,8 +22,6 @@ import {
   Filter,
   Check,
   AlertTriangle,
-  Lock,
-  LogOut,
   ExternalLink,
   Eye,
   Clock,
@@ -32,6 +30,7 @@ import {
   Building,
   HardHat,
   RefreshCw,
+  LogOut,
 } from 'lucide-react';
 import { mockWorkersList, mockJobs } from '../../data/mockData';
 import { verifiedSchemes, verifiedInsuranceOptions } from '../../data/safetyNetData';
@@ -54,16 +53,10 @@ type AdminTab =
 export const AdminPage: React.FC = () => {
   const { language } = useLanguage();
   const { jobs, workers, paymentRecords, ratings, hires } = useJobs();
-  const { auth } = useAuth();
+  const { auth, logout } = useAuth();
   const { state: safetyNetState } = useSafetyNet();
   const navigate = useNavigate();
 
-  // Demo Admin Authentication State
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(() => {
-    return localStorage.getItem('shramikk_admin_logged_in') === 'true';
-  });
-  const [adminEmail, setAdminEmail] = useState('admin@shramikk.in');
-  const [adminPassword, setAdminPassword] = useState('admin123');
   const [activeTab, setActiveTab] = useState<AdminTab>('overview');
 
   // Search & Filter States
@@ -83,19 +76,12 @@ export const AdminPage: React.FC = () => {
   const totalPaymentSum = 242000 + paymentRecords.reduce((sum, p) => sum + p.amount, 0);
   const isSafetyNetActive = safetyNetState.safetyNetEnabled;
 
-  // Handle Admin Login
-  const handleAdminLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (adminEmail && adminPassword) {
-      setIsAdminLoggedIn(true);
-      localStorage.setItem('shramikk_admin_logged_in', 'true');
+  // Auth guard: redirect non-admin users to login
+  useEffect(() => {
+    if (!auth.isAuthenticated || auth.role !== 'admin') {
+      navigate('/login', { replace: true });
     }
-  };
-
-  const handleAdminLogout = () => {
-    setIsAdminLoggedIn(false);
-    localStorage.removeItem('shramikk_admin_logged_in');
-  };
+  }, [auth.isAuthenticated, auth.role, navigate]);
 
   // Demo Data Reset Handler
   const handleResetDemoData = () => {
@@ -139,77 +125,12 @@ export const AdminPage: React.FC = () => {
   });
 
   // =========================================================================
-  // 1. DEMO ADMIN LOGIN SCREEN (IF NOT LOGGED IN)
+  // MAIN ADMIN DASHBOARD & CONTROL CENTER
   // =========================================================================
-  if (!isAdminLoggedIn) {
-    return (
-      <div className="min-h-[85vh] flex items-center justify-center p-4 bg-[#FAF9F6]">
-        <div className="max-w-md w-full rounded-[32px] bg-white border border-slate-200 p-8 shadow-card space-y-6">
-          <div className="text-center space-y-2">
-            <div className="w-14 h-14 rounded-2xl bg-[#0B132B] text-amber-400 flex items-center justify-center mx-auto shadow-md font-black text-2xl">
-              ⚙️
-            </div>
-            <span className="px-3 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-black uppercase tracking-wider">
-              HACKATHON DEMO CONTROL
-            </span>
-            <h1 className="text-2xl font-black text-[#0B132B]">
-              SHRAMIKK Admin Portal
-            </h1>
-            <p className="text-xs text-slate-500">
-              सिस्टम मॉनिटरिंग, डेटा ऑडिट और ग्रैंड फिनाले डेमो कंट्रोल पैनल
-            </p>
-          </div>
-
-          <form onSubmit={handleAdminLogin} className="space-y-4 text-xs">
-            <div className="space-y-1">
-              <label className="font-extrabold text-slate-700">Admin Email</label>
-              <input
-                type="email"
-                value={adminEmail}
-                onChange={(e) => setAdminEmail(e.target.value)}
-                required
-                className="w-full p-3 rounded-xl border border-slate-200 font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500"
-              />
-            </div>
-
-            <div className="space-y-1">
-              <label className="font-extrabold text-slate-700">Password</label>
-              <input
-                type="password"
-                value={adminPassword}
-                onChange={(e) => setAdminPassword(e.target.value)}
-                required
-                className="w-full p-3 rounded-xl border border-slate-200 font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500"
-              />
-            </div>
-
-            <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-[11px] text-amber-900">
-              <strong className="block">💡 Seeded Demo Credentials:</strong>
-              <span>Email: <code>admin@shramikk.in</code> | Password: <code>admin123</code></span>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full py-3.5 rounded-xl bg-[#0B132B] hover:bg-slate-800 text-amber-400 font-black text-sm shadow-md transition-all flex items-center justify-center gap-2"
-            >
-              <Lock className="w-4 h-4" />
-              <span>Admin Dashboard में प्रवेश करें (Login)</span>
-            </button>
-          </form>
-
-          <div className="text-center pt-2 border-t border-slate-100">
-            <Link to="/" className="text-xs font-bold text-slate-500 hover:text-slate-800">
-              ← SHRAMIKK होम पर लौटें
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
+  if (!auth.isAuthenticated || auth.role !== 'admin') {
+    return null; // redirected by useEffect above
   }
 
-  // =========================================================================
-  // 2. MAIN ADMIN DASHBOARD & CONTROL CENTER
-  // =========================================================================
   return (
     <div className="min-h-screen pb-24 md:pb-12 bg-[#FAF9F6]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
@@ -245,7 +166,7 @@ export const AdminPage: React.FC = () => {
 
             <button
               type="button"
-              onClick={handleAdminLogout}
+              onClick={() => { logout(); navigate('/'); }}
               className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold flex items-center gap-1.5 transition-colors border border-white/20"
             >
               <LogOut className="w-3.5 h-3.5" />
@@ -258,7 +179,7 @@ export const AdminPage: React.FC = () => {
         {resetSuccessMessage && (
           <div className="p-4 rounded-2xl bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-black flex items-center gap-2 animate-in fade-in duration-200">
             <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
-            <span>डेमो डेटा सफलतापूर्वक रीसेट हुआ। पृष्ठ रीलोड हो रहा है...</span>
+            <span>System cache reset successfully. Reloading page...</span>
           </div>
         )}
 
@@ -266,7 +187,7 @@ export const AdminPage: React.FC = () => {
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 border-b border-slate-200 text-xs font-bold scrollbar-none">
           {[
             { id: 'overview', label: '📊 Overview' },
-            { id: 'demo_control', label: '🚀 Demo Control Center' },
+            { id: 'demo_control', label: '⚡ Operations & Workflows' },
             { id: 'workers', label: `👷 Workers (${totalWorkers})` },
             { id: 'hirers', label: '🏢 Hirers' },
             { id: 'jobs', label: `💼 Jobs (${totalJobs})` },
@@ -298,53 +219,53 @@ export const AdminPage: React.FC = () => {
             {/* 8 Metric KPI Cards */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-card">
-                <div className="text-[11px] font-bold text-slate-400 uppercase">कुल कामगार</div>
+                <div className="text-[11px] font-bold text-slate-400 uppercase">Total Workers</div>
                 <div className="text-2xl sm:text-3xl font-black text-slate-900 font-sans mt-1">{totalWorkers}</div>
-                <span className="text-[10px] text-emerald-700 font-bold">100% सत्यापित प्रोफ़ाइल</span>
+                <span className="text-[10px] text-emerald-700 font-bold">100% Verified Profiles</span>
               </div>
 
               <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-card">
-                <div className="text-[11px] font-bold text-slate-400 uppercase">कुल काम (Jobs)</div>
+                <div className="text-[11px] font-bold text-slate-400 uppercase">Total Jobs</div>
                 <div className="text-2xl sm:text-3xl font-black text-slate-900 font-sans mt-1">{totalJobs}</div>
-                <span className="text-[10px] text-amber-700 font-bold">{activeJobs} सक्रिय • {completedJobs} पूर्ण</span>
+                <span className="text-[10px] text-amber-700 font-bold">{activeJobs} Active • {completedJobs} Completed</span>
               </div>
 
               <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-card">
-                <div className="text-[11px] font-bold text-slate-400 uppercase">सत्यापित भुगतान</div>
+                <div className="text-[11px] font-bold text-slate-400 uppercase">Verified Payments</div>
                 <div className="text-2xl sm:text-3xl font-black text-emerald-700 font-sans mt-1">{totalVerifiedPayments}</div>
-                <span className="text-[10px] text-slate-500">दो-तरफ़ा पुष्ट पर्चियां</span>
+                <span className="text-[10px] text-slate-500">Two-way confirmed slips</span>
               </div>
 
               <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-card">
-                <div className="text-[11px] font-bold text-slate-400 uppercase">दर्ज आय मात्रा</div>
+                <div className="text-[11px] font-bold text-slate-400 uppercase">Total Volume Recorded</div>
                 <div className="text-2xl sm:text-3xl font-black text-slate-900 font-sans mt-1">₹{(totalPaymentSum/1000).toFixed(0)}K</div>
-                <span className="text-[10px] text-emerald-700 font-bold">वैध कार्य बहीखाता</span>
+                <span className="text-[10px] text-emerald-700 font-bold">Verified ledger balance</span>
               </div>
 
               <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-card">
-                <div className="text-[11px] font-bold text-slate-400 uppercase">कुल रेटिंग्स</div>
+                <div className="text-[11px] font-bold text-slate-400 uppercase">Total Ratings</div>
                 <div className="text-2xl sm:text-3xl font-black text-amber-900 font-sans mt-1">{totalRatingsCount} ★</div>
-                <span className="text-[10px] text-slate-500">4.8 औसत रेटिंग</span>
+                <span className="text-[10px] text-slate-500">4.8 Average Rating</span>
               </div>
 
               <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-card">
-                <div className="text-[11px] font-bold text-slate-400 uppercase">डिजिटल पहचानें</div>
+                <div className="text-[11px] font-bold text-slate-400 uppercase">Digital Identities</div>
                 <div className="text-2xl sm:text-3xl font-black text-slate-900 font-sans mt-1">{totalWorkers}</div>
-                <span className="text-[10px] text-emerald-700 font-bold">QR व शेयर समर्थित</span>
+                <span className="text-[10px] text-emerald-700 font-bold">QR & Share enabled</span>
               </div>
 
               <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-card">
-                <div className="text-[11px] font-bold text-slate-400 uppercase">सरकारी योजनाएं</div>
+                <div className="text-[11px] font-bold text-slate-400 uppercase">Government Schemes</div>
                 <div className="text-2xl sm:text-3xl font-black text-violet-900 font-sans mt-1">10</div>
-                <span className="text-[10px] text-violet-700 font-bold">सत्यापित खोज डेटा</span>
+                <span className="text-[10px] text-violet-700 font-bold">Verified Welfare DB</span>
               </div>
 
               <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-card">
-                <div className="text-[11px] font-bold text-slate-400 uppercase">सेफ्टी नेट स्थिति</div>
+                <div className="text-[11px] font-bold text-slate-400 uppercase">Safety Net Status</div>
                 <div className="text-2xl sm:text-3xl font-black text-emerald-700 font-sans mt-1">
                   {isSafetyNetActive ? 'Active ✓' : 'Opt-in'}
                 </div>
-                <span className="text-[10px] text-slate-500">अलर्ट व सुरक्षा शील्ड</span>
+                <span className="text-[10px] text-slate-500">Protection Shield Enabled</span>
               </div>
             </div>
 
@@ -354,7 +275,7 @@ export const AdminPage: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <Activity className="w-5 h-5 text-emerald-600" />
                   <h3 className="text-base font-extrabold text-[#0B132B]">
-                    सिस्टम स्वास्थ्य एवं मॉड्यूल ऑडिट (System Health)
+                    System Health & Module Audit
                   </h3>
                 </div>
                 <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
@@ -387,16 +308,16 @@ export const AdminPage: React.FC = () => {
             <div className="rounded-[28px] bg-white border border-slate-200 shadow-card p-6 space-y-3">
               <h3 className="text-base font-extrabold text-[#0B132B] flex items-center gap-2">
                 <Clock className="w-4 h-4 text-amber-500" />
-                <span>हालिया गतिविधि लॉग (Platform Activity Stream)</span>
+                <span>Recent Platform Activity Stream</span>
               </h3>
 
               <div className="space-y-2 text-xs">
                 {[
-                  { text: 'रमेश कुमार (Mason) ने विला चिनाई कार्य पूरा किया।', time: '10 min ago', tag: 'Job Completed' },
-                  { text: 'अमित शर्मा ने ₹3,000 भुगतान की पुष्टि की (दो-तरफ़ा सत्यापन पूर्ण)।', time: '15 min ago', tag: 'Payment Verified' },
-                  { text: 'डिजिटल कार्य पहचान पत्र का QR कोड स्कैन व एक्सेस किया गया।', time: '1 hour ago', tag: 'Identity Shared' },
-                  { text: 'AI साथी द्वारा ई-श्रम व अटल पेंशन योजना का सफल मिलान किया गया।', time: '2 hours ago', tag: 'Safety Net' },
-                  { text: 'नया निर्माण कार्य "Residential Villa Mason Needed" पोस्ट हुआ।', time: '4 hours ago', tag: 'Marketplace' },
+                  { text: 'Ramesh Kumar (Mason) completed Villa Masonry Work.', time: '10 min ago', tag: 'Job Completed' },
+                  { text: 'Amit Sharma confirmed ₹3,000 payment (two-way verification complete).', time: '15 min ago', tag: 'Payment Verified' },
+                  { text: 'Digital Work Identity QR Code scanned and accessed.', time: '1 hour ago', tag: 'Identity Shared' },
+                  { text: 'AI Saathi matched worker with e-Shram and Atal Pension Yojana schemes.', time: '2 hours ago', tag: 'Safety Net' },
+                  { text: 'New construction job "Residential Villa Mason Needed" posted.', time: '4 hours ago', tag: 'Marketplace' },
                 ].map((act, idx) => (
                   <div key={idx} className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2">
@@ -422,13 +343,13 @@ export const AdminPage: React.FC = () => {
             <div className="rounded-[28px] bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 p-6 sm:p-8 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <span className="px-3 py-1 rounded-full bg-slate-950/10 text-slate-950 text-xs font-black uppercase">
-                  Grand Finale Demo Switcher
+                  Workforce Operations & Workflows
                 </span>
                 <h2 className="text-2xl sm:text-3xl font-black mt-1">
-                  Demo Control Center
+                  Operations & Workflow Simulator
                 </h2>
                 <p className="text-xs sm:text-sm font-semibold opacity-90 mt-0.5">
-                  जज महोदय को 3-5 मिनट में सम्पूर्ण SHRAMIKK एंड-टू-एंड यात्रा प्रदर्शित करने हेतु त्वरित परिदृश्य
+                  SHRAMIKK End-to-End Workforce Lifecycle Navigation
                 </p>
               </div>
 
@@ -438,7 +359,7 @@ export const AdminPage: React.FC = () => {
                 className="px-5 py-3 rounded-2xl bg-[#0B132B] hover:bg-slate-900 text-amber-400 text-xs font-black shadow-md flex items-center gap-2 shrink-0 transition-transform active:scale-95"
               >
                 <RotateCcw className="w-4 h-4" />
-                <span>Reset Demo State</span>
+                <span>Reset System Cache</span>
               </button>
             </div>
 
@@ -446,57 +367,57 @@ export const AdminPage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[
                 {
-                  title: 'Scenario 1: कामगार काम खोजे (Find Work)',
-                  desc: 'Ramesh Kumar डैशबोर्ड से पास के विला निर्माण कार्य खोजता है और आवेदन करता है।',
+                  title: 'Scenario 1: Worker Discovers Work (Find Work)',
+                  desc: 'Ramesh Kumar searches nearby residential villa jobs from his dashboard and submits an application.',
                   path: '/find-work',
                   tag: 'Worker Flow',
                   icon: <HardHat className="w-5 h-5 text-amber-600" />,
                 },
                 {
-                  title: 'Scenario 2: ठेकेदार हायरिंग व कार्य प्रबंधन (Hire & Manage)',
-                  desc: 'Amit Sharma आवेदन स्वीकार कर रमेश को काम पर रखता है व शिफ्ट शुरू करता है।',
+                  title: 'Scenario 2: Employer Hiring & Shift Management',
+                  desc: 'Amit Sharma reviews applicant credentials, confirms the hiring, and punches in the shift.',
                   path: '/hirer/my-jobs',
                   tag: 'Hirer Flow',
                   icon: <Briefcase className="w-5 h-5 text-blue-600" />,
                 },
                 {
-                  title: 'Scenario 3: दो-तरफ़ा भुगतान सत्यापन (Dual Payment Verification)',
-                  desc: 'काम पूरा होने पर दोनों पक्ष ₹3,000 की पुष्टि करते हैं और पर्ची Verified होती है।',
+                  title: 'Scenario 3: Dual Payment Verification & Escrow',
+                  desc: 'Upon completion, contractor releases funds, worker confirms receipt, and immutable ledger slip generates.',
                   path: '/worker/financial-hub',
                   tag: 'Payment Verification',
                   icon: <IndianRupee className="w-5 h-5 text-emerald-600" />,
                 },
                 {
-                  title: 'Scenario 4: डिजिटल कार्य पहचान व QR कोड (Work Identity)',
-                  desc: 'सत्यापित कार्य इतिहास, रेटिंग्स और लाइव QR कोड जनरेशन के साथ डिजिटल कार्ड।',
+                  title: 'Scenario 4: Digital Work Identity & Live QR Badge',
+                  desc: 'Portable digital worker identity card displaying verified trade grade, past ratings, and verification QR code.',
                   path: '/worker/digital-identity',
                   tag: 'Trust Profile',
                   icon: <Award className="w-5 h-5 text-violet-600" />,
                 },
                 {
-                  title: 'Scenario 5: फाइनेंशियल सेफ्टी नेट व सरकारी योजनाएं (Safety Net)',
-                  desc: 'आय व्यवधान का पता लगाना, e-Shram, BOCW व APY योजनाओं का पारदर्शी मिलान।',
+                  title: 'Scenario 5: Safety Net & Government Schemes',
+                  desc: 'Income smoothing detection with automated eligibility matching for e-Shram, BOCW, and APY pension.',
                   path: '/worker/safety-net',
                   tag: 'Safety Net',
                   icon: <Shield className="w-5 h-5 text-emerald-600" />,
                 },
                 {
-                  title: 'Scenario 6: AI साथी सत्यापित खोज (Verified AI Assistant)',
-                  desc: 'एंटी-हैलुसिनेशन रिट्रीवल आधारित एआई साथी से योजनाओं व सुरक्षा पर चैट।',
+                  title: 'Scenario 6: AI Saathi Intelligence Assistant',
+                  desc: 'Verified welfare assistant powered by anti-hallucination scheme database for construction laborers.',
                   path: '/worker/ai-saathi',
                   tag: 'AI Assistant',
                   icon: <Bot className="w-5 h-5 text-violet-600" />,
                 },
                 {
-                  title: 'Scenario 7: पोर्टेबल पहचान व सार्वजनिक शेयर (Public QR Route)',
-                  desc: 'किसी भी बाहरी व्यक्ति/ठेकेदार हेतु सुरक्षित सार्वजनिक कार्य पहचान पृष्ठ।',
+                  title: 'Scenario 7: Portable Identity & Public Share',
+                  desc: 'Public verifiable digital identity link readable by any external contractor via QR scan.',
                   path: '/worker/w-101/identity',
                   tag: 'Public Identity',
                   icon: <ExternalLink className="w-5 h-5 text-blue-600" />,
                 },
                 {
-                  title: 'Scenario 8: नियोक्ता प्रतिष्ठा प्रोफ़ाइल (Hirer Reputation)',
-                  desc: 'दो-तरफ़ा विश्वास: ठेकेदार की रेटिंग्स, कार्य इतिहास व कामगार समीक्षाएं।',
+                  title: 'Scenario 8: Employer Trust & Reputation Profile',
+                  desc: 'Two-sided transparency: Contractor payment reliability ratings, past projects, and worker reviews.',
                   path: '/hirer/profile',
                   tag: 'Two-Sided Trust',
                   icon: <Building className="w-5 h-5 text-amber-600" />,
@@ -543,9 +464,9 @@ export const AdminPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h3 className="text-base font-extrabold text-[#0B132B]">
-                  पंजीकृत कामगार अभिलेख (Workers Directory & Identity Audit)
+                  Workers Directory & Identity Audit
                 </h3>
-                <p className="text-xs text-slate-500">कुल {filteredWorkers.length} कामगार प्रोफाइल उपलब्ध</p>
+                <p className="text-xs text-slate-500">Total {filteredWorkers.length} verified worker profiles</p>
               </div>
 
               {/* Search Bar */}
@@ -555,7 +476,7 @@ export const AdminPage: React.FC = () => {
                   type="text"
                   value={workerSearch}
                   onChange={(e) => setWorkerSearch(e.target.value)}
-                  placeholder="नाम, कौशल या स्थान से खोजें..."
+                  placeholder="Search by name, skill, or city..."
                   className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
               </div>
@@ -565,13 +486,13 @@ export const AdminPage: React.FC = () => {
               <table className="w-full text-left text-xs">
                 <thead>
                   <tr className="border-b border-slate-100 text-slate-400 uppercase text-[10px]">
-                    <th className="pb-2.5 font-bold">कामगार</th>
-                    <th className="pb-2.5 font-bold">मुख्य ट्रेड</th>
-                    <th className="pb-2.5 font-bold">स्थान</th>
-                    <th className="pb-2.5 font-bold">रेटिंग</th>
-                    <th className="pb-2.5 font-bold">पूर्ण कार्य</th>
-                    <th className="pb-2.5 font-bold">डिजिटल पहचान</th>
-                    <th className="pb-2.5 font-bold text-right">कार्य</th>
+                    <th className="pb-2.5 font-bold">Worker</th>
+                    <th className="pb-2.5 font-bold">Primary Trade</th>
+                    <th className="pb-2.5 font-bold">Location</th>
+                    <th className="pb-2.5 font-bold">Rating</th>
+                    <th className="pb-2.5 font-bold">Completed Shifts</th>
+                    <th className="pb-2.5 font-bold">Digital Identity</th>
+                    <th className="pb-2.5 font-bold text-right">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -598,7 +519,7 @@ export const AdminPage: React.FC = () => {
                           target="_blank"
                           className="text-amber-800 hover:text-amber-950 font-bold hover:underline"
                         >
-                          देखें →
+                          View →
                         </Link>
                       </td>
                     </tr>
@@ -616,30 +537,30 @@ export const AdminPage: React.FC = () => {
           <div className="rounded-[28px] bg-white border border-slate-200 shadow-card p-6 space-y-4">
             <div>
               <h3 className="text-base font-extrabold text-[#0B132B]">
-                सत्यापित नियोक्ता व ठेकेदार (Hirers & Contractors Audit)
+                Verified Hirers & Contractors Audit
               </h3>
-              <p className="text-xs text-slate-500">दो-तरफ़ा रेटिंग्स व भुगतान अनुपालन की निगरानी</p>
+              <p className="text-xs text-slate-500">Two-way ratings and payment compliance monitoring</p>
             </div>
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
                   <tr className="border-b border-slate-100 text-slate-400 uppercase text-[10px]">
-                    <th className="pb-2.5 font-bold">नियोक्ता नाम</th>
-                    <th className="pb-2.5 font-bold">श्रेणी / Type</th>
-                    <th className="pb-2.5 font-bold">स्थान</th>
-                    <th className="pb-2.5 font-bold">रेटिंग</th>
-                    <th className="pb-2.5 font-bold">पोस्ट किए काम</th>
-                    <th className="pb-2.5 font-bold">स्थिति</th>
-                    <th className="pb-2.5 font-bold text-right">प्रोफ़ाइल</th>
+                    <th className="pb-2.5 font-bold">Hirer Name</th>
+                    <th className="pb-2.5 font-bold">Category / Type</th>
+                    <th className="pb-2.5 font-bold">Location</th>
+                    <th className="pb-2.5 font-bold">Rating</th>
+                    <th className="pb-2.5 font-bold">Jobs Posted</th>
+                    <th className="pb-2.5 font-bold">Status</th>
+                    <th className="pb-2.5 font-bold text-right">Profile</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {[
-                    { name: 'अमित शर्मा (Amit Sharma)', type: 'सिविल ठेकेदार', city: 'Ghaziabad', rating: 4.8, jobs: 4, status: '✓ Verified Prompt Payer' },
-                    { name: 'सुरेश गुप्ता (Suresh Gupta)', type: 'होम ओनर', city: 'Delhi', rating: 4.7, jobs: 2, status: '✓ Verified' },
-                    { name: 'राजेश कुमार (Rajesh Kumar)', type: 'होम ओनर', city: 'Indirapuram', rating: 4.6, jobs: 3, status: '✓ Verified' },
-                    { name: 'गोयल कंस्ट्रक्शन प्रा. लि.', type: 'बिल्डर कंपनी', city: 'Sahibabad', rating: 4.9, jobs: 6, status: '✓ Verified Corporate' },
+                    { name: 'Amit Sharma (Contractor)', type: 'Civil Contractor', city: 'Ghaziabad', rating: 4.8, jobs: 4, status: '✓ Verified Prompt Payer' },
+                    { name: 'Suresh Gupta', type: 'Home Owner', city: 'Delhi', rating: 4.7, jobs: 2, status: '✓ Verified' },
+                    { name: 'Rajesh Kumar', type: 'Home Owner', city: 'Indirapuram', rating: 4.6, jobs: 3, status: '✓ Verified' },
+                    { name: 'Goyal Construction Pvt. Ltd.', type: 'Corporate Builder', city: 'Sahibabad', rating: 4.9, jobs: 6, status: '✓ Verified Corporate' },
                   ].map((h, i) => (
                     <tr key={i} className="hover:bg-slate-50">
                       <td className="py-3.5 font-extrabold text-slate-900">{h.name}</td>
@@ -654,7 +575,7 @@ export const AdminPage: React.FC = () => {
                       </td>
                       <td className="py-3.5 text-right">
                         <Link to="/hirer/profile" className="text-amber-800 font-bold hover:underline">
-                          देखें →
+                          View →
                         </Link>
                       </td>
                     </tr>
@@ -673,15 +594,15 @@ export const AdminPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h3 className="text-base font-extrabold text-[#0B132B]">
-                  कार्य पोस्टिंग व शिफ्ट स्थिति (Jobs & Shifts Pipeline)
+                  Job Postings & Shift Pipeline
                 </h3>
-                <p className="text-xs text-slate-500">लाइव व पूर्ण किए गए कार्यों की सूची</p>
+                <p className="text-xs text-slate-500">Live and completed job shifts overview</p>
               </div>
 
               {/* Status Filter */}
               <div className="flex items-center gap-1.5 overflow-x-auto">
                 {[
-                  { id: 'all', label: 'सभी (All)' },
+                  { id: 'all', label: 'All' },
                   { id: 'open', label: 'Open' },
                   { id: 'in_progress', label: 'In Progress' },
                   { id: 'completed', label: 'Completed' },
@@ -704,21 +625,21 @@ export const AdminPage: React.FC = () => {
               <table className="w-full text-left text-xs">
                 <thead>
                   <tr className="border-b border-slate-100 text-slate-400 uppercase text-[10px]">
-                    <th className="pb-2.5 font-bold">कार्य शीर्षक (Job Title)</th>
-                    <th className="pb-2.5 font-bold">नियोक्ता</th>
-                    <th className="pb-2.5 font-bold">स्थान</th>
-                    <th className="pb-2.5 font-bold">दैनिक दर</th>
-                    <th className="pb-2.5 font-bold">स्थिति</th>
-                    <th className="pb-2.5 font-bold text-right">तिथि</th>
+                    <th className="pb-2.5 font-bold">Job Title</th>
+                    <th className="pb-2.5 font-bold">Hirer</th>
+                    <th className="pb-2.5 font-bold">Location</th>
+                    <th className="pb-2.5 font-bold">Daily Wage</th>
+                    <th className="pb-2.5 font-bold">Status</th>
+                    <th className="pb-2.5 font-bold text-right">Date</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {filteredJobs.map((j) => (
                     <tr key={j.id} className="hover:bg-slate-50">
-                      <td className="py-3.5 font-extrabold text-slate-900">{j.titleHi || j.title}</td>
+                      <td className="py-3.5 font-extrabold text-slate-900">{j.title || j.titleHi}</td>
                       <td className="py-3.5 text-slate-700">{j.hirerName}</td>
                       <td className="py-3.5 text-slate-500">{j.location.locality}, {j.location.city}</td>
-                      <td className="py-3.5 font-bold text-slate-900 font-sans">₹{j.wagePerDay}/दिन</td>
+                      <td className="py-3.5 font-bold text-slate-900 font-sans">₹{j.wagePerDay}/day</td>
                       <td className="py-3.5">
                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
                           j.status === 'completed'
@@ -747,17 +668,17 @@ export const AdminPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h3 className="text-base font-extrabold text-[#0B132B]">
-                  दो-तरफ़ा भुगतान सत्यापन निगरानी (Payment Verification Monitor)
+                  Two-Way Payment Verification Monitor
                 </h3>
                 <p className="text-xs text-slate-500">
-                  कामगार व नियोक्ता दोनों की पुष्टि स्थिति और डिजिटल वेतन पर्चियां
+                  Worker and Hirer dual verification status & digital payment slips
                 </p>
               </div>
 
               {/* Status Filter */}
               <div className="flex items-center gap-1.5 overflow-x-auto">
                 {[
-                  { id: 'all', label: 'सभी (All)' },
+                  { id: 'all', label: 'All' },
                   { id: 'verified', label: 'Verified' },
                   { id: 'pending', label: 'Pending' },
                   { id: 'under_review', label: 'Issues' },
@@ -780,13 +701,13 @@ export const AdminPage: React.FC = () => {
               <table className="w-full text-left text-xs">
                 <thead>
                   <tr className="border-b border-slate-100 text-slate-400 uppercase text-[10px]">
-                    <th className="pb-2.5 font-bold">कार्य व पर्ची</th>
-                    <th className="pb-2.5 font-bold">कामगार</th>
-                    <th className="pb-2.5 font-bold">नियोक्ता</th>
-                    <th className="pb-2.5 font-bold">राशि (₹)</th>
-                    <th className="pb-2.5 font-bold">कामगार पुष्टि</th>
-                    <th className="pb-2.5 font-bold">नियोक्ता पुष्टि</th>
-                    <th className="pb-2.5 font-bold text-right">सत्यापन स्थिति</th>
+                    <th className="pb-2.5 font-bold">Job & Slip</th>
+                    <th className="pb-2.5 font-bold">Worker</th>
+                    <th className="pb-2.5 font-bold">Hirer</th>
+                    <th className="pb-2.5 font-bold">Amount (₹)</th>
+                    <th className="pb-2.5 font-bold">Worker Confirmed</th>
+                    <th className="pb-2.5 font-bold">Hirer Confirmed</th>
+                    <th className="pb-2.5 font-bold text-right">Verification Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -843,10 +764,10 @@ export const AdminPage: React.FC = () => {
           <div className="rounded-[28px] bg-white border border-slate-200 shadow-card p-6 space-y-4">
             <div>
               <h3 className="text-base font-extrabold text-[#0B132B]">
-                डिजिटल कार्य पहचान पत्र स्थिति (Digital Work Identities)
+                Digital Work Identities Status
               </h3>
               <p className="text-xs text-slate-500">
-                साक्ष्य-आधारित कार्य प्रतिष्ठा, कौशल, रेटिंग्स और सार्वजनिक QR लिंक्स
+                Evidence-based work reputation, trade skills, ratings, and public QR links
               </p>
             </div>
 
@@ -892,9 +813,9 @@ export const AdminPage: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-base font-extrabold text-[#0B132B]">
-                    सरकारी कल्याणकारी योजना डेटाबेस (Government Welfare Schemes Database)
+                    Government Welfare Schemes Database
                   </h3>
-                  <p className="text-xs text-slate-500">10 प्रमाणित केंद्रीय व राज्य कल्याणकारी कार्यक्रम</p>
+                  <p className="text-xs text-slate-500">10 verified central & state welfare programs</p>
                 </div>
                 <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold">
                   ✓ 10 Verified Records
@@ -905,13 +826,13 @@ export const AdminPage: React.FC = () => {
                 {verifiedSchemes.map((s) => (
                   <div key={s.id} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
                     <div className="flex items-start justify-between">
-                      <strong className="text-slate-900 font-bold">{s.nameHi} ({s.name})</strong>
+                      <strong className="text-slate-900 font-bold">{s.name}</strong>
                       <span className="px-2 py-0.5 rounded-full bg-violet-100 text-violet-900 text-[10px] font-bold shrink-0">
                         {s.category}
                       </span>
                     </div>
-                    <p className="text-[11px] text-slate-600">{s.descriptionHi}</p>
-                    <div className="text-[10px] text-amber-800 font-mono">स्रोत: {s.officialSource || 'Government Portal'}</div>
+                    <p className="text-[11px] text-slate-600">{s.description}</p>
+                    <div className="text-[10px] text-amber-800 font-mono">Source: {s.officialSource || 'Government Portal'}</div>
                   </div>
                 ))}
               </div>
@@ -921,9 +842,9 @@ export const AdminPage: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-base font-extrabold text-[#0B132B]">
-                    विनियमित सुरक्षा व बीमा विकल्प (Regulated Insurance Options)
+                    Regulated Insurance Options
                   </h3>
-                  <p className="text-xs text-slate-500">PMSBY, PMJJBY, Ayushman Bharat आदि</p>
+                  <p className="text-xs text-slate-500">PMSBY, PMJJBY, Ayushman Bharat and more</p>
                 </div>
                 <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-900 text-xs font-bold">
                   ✓ 4 Protection Options
@@ -934,11 +855,11 @@ export const AdminPage: React.FC = () => {
                 {verifiedInsuranceOptions.map((i) => (
                   <div key={i.id} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
                     <div className="flex items-center justify-between">
-                      <strong className="text-slate-900 font-bold">{i.nameHi}</strong>
+                      <strong className="text-slate-900 font-bold">{i.name}</strong>
                       <span className="font-mono text-emerald-700 font-black">{i.category}</span>
                     </div>
-                    <p className="text-[11px] text-slate-600">{i.coverageHi[0]}</p>
-                    <div className="text-[10px] text-slate-400">प्रदाता: {i.provider}</div>
+                    <p className="text-[11px] text-slate-600">{i.coverage[0]}</p>
+                    <div className="text-[10px] text-slate-400">Provider: {i.provider}</div>
                   </div>
                 ))}
               </div>
@@ -955,10 +876,10 @@ export const AdminPage: React.FC = () => {
               <div>
                 <h3 className="text-base font-extrabold text-[#0B132B] flex items-center gap-2">
                   <Bot className="w-5 h-5 text-violet-600" />
-                  <span>AI साथी रिट्रीवल एवं सुरक्षा ऑडिट (AI Saathi Audit)</span>
+                  <span>AI Saathi Retrieval & Safety Audit</span>
                 </h3>
                 <p className="text-xs text-slate-500">
-                  एंटी-हैलुसिनेशन रिट्रीवल सुरक्षा: AI साथी केवल प्रमाणित डेटा से उत्तर देता है
+                  Anti-hallucination guardrail active: AI Saathi answers strictly from verified welfare data
                 </p>
               </div>
               <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold">
@@ -968,30 +889,30 @@ export const AdminPage: React.FC = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-center">
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                <span className="text-[11px] font-bold text-slate-400 block uppercase">समर्थित इंटेंट्स</span>
+                <span className="text-[11px] font-bold text-slate-400 block uppercase">Supported Intents</span>
                 <span className="text-2xl font-black text-violet-900 font-sans mt-1">4 Intents</span>
                 <span className="text-[10px] text-slate-500 block mt-0.5">Scheme, Insurance, Income, Benefits</span>
               </div>
 
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                <span className="text-[11px] font-bold text-slate-400 block uppercase">सुरक्षित फ़ॉलबैक दर</span>
+                <span className="text-[11px] font-bold text-slate-400 block uppercase">Safe Fallback Rate</span>
                 <span className="text-2xl font-black text-emerald-700 font-sans mt-1">100%</span>
-                <span className="text-[10px] text-slate-500 block mt-0.5">अज्ञात प्रश्नों पर सुरक्षित अस्वीकृति</span>
+                <span className="text-[10px] text-slate-500 block mt-0.5">Safe rejection on unknown queries</span>
               </div>
 
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                <span className="text-[11px] font-bold text-slate-400 block uppercase">सत्यापन बैज</span>
+                <span className="text-[11px] font-bold text-slate-400 block uppercase">Verification Badge</span>
                 <span className="text-2xl font-black text-amber-900 font-sans mt-1">✓ Verified</span>
-                <span className="text-[10px] text-slate-500 block mt-0.5">प्रत्येक उत्तर के साथ स्रोत लिंक्ड</span>
+                <span className="text-[10px] text-slate-500 block mt-0.5">Source linked with every response</span>
               </div>
             </div>
 
             <div className="p-4 rounded-2xl bg-violet-50/60 border border-violet-200 text-xs space-y-2">
-              <strong className="text-violet-950 font-bold block">🛡 एंटी-हैलुसिनेशन अनुपालन नियम (Rule 41 Compliance):</strong>
+              <strong className="text-violet-950 font-bold block">🛡 Anti-Hallucination Compliance Rules (Rule 41 Compliance):</strong>
               <ul className="list-disc list-inside space-y-1 text-slate-700 text-[11px]">
-                <li>AI साथी कभी भी सरकारी पात्रता की 100% गारंटी नहीं देता ("आप पात्र हो सकते हैं" का प्रयोग)।</li>
-                <li>बिना प्रमाणित रिकॉर्ड के कोई काल्पनिक योजना या बीमा पॉलिसी नहीं बनाई जाती।</li>
-                <li>कोई वित्तीय या निवेश सलाह प्रदान नहीं की जाती।</li>
+                <li>AI Saathi never guarantees government scheme eligibility 100% (uses "You may be eligible").</li>
+                <li>No hypothetical or fictitious welfare schemes or insurance policies are ever generated.</li>
+                <li>No binding financial, loan, or investment advice is provided.</li>
               </ul>
             </div>
           </div>
@@ -1012,22 +933,22 @@ export const AdminPage: React.FC = () => {
               Reset Demo State?
             </h3>
             <p className="text-xs text-slate-600 leading-relaxed">
-              क्या आप सभी स्थानीय कार्य अभिलेखों, भुगतानों व रेटिंग्स को डिफ़ॉल्ट सीडेड डेमो स्थिति में रीसेट करना चाहते हैं?
+              Are you sure you want to reset all local jobs, payments, ratings, and identity records back to initial seeded demo data?
             </p>
             <div className="flex items-center gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => setShowResetConfirm(false)}
-                className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs"
+                className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs cursor-pointer"
               >
-                रद्द करें (Cancel)
+                Cancel
               </button>
               <button
                 type="button"
                 onClick={handleResetDemoData}
-                className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-md"
+                className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-md cursor-pointer"
               >
-                रीसेट करें (Reset)
+                Reset State
               </button>
             </div>
           </div>

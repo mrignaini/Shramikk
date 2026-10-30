@@ -281,7 +281,7 @@ async function main() {
         provider: 'Government of India',
         name: 'Pradhan Mantri Jeevan Jyoti Bima Yojana (PMJJBY)',
         description: 'Life insurance coverage of ₹2 Lakhs for any cause of death.',
-        coverage: '₹2,0,000 Life Protection',
+        coverage: '₹2,00,000 Life Protection',
         active: true,
       },
     ],

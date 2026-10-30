@@ -53,10 +53,10 @@ export const MyJobsPage: React.FC = () => {
               Hirer Management Portal
             </span>
             <h1 className="text-2xl sm:text-3xl font-black text-white font-sans">
-              {t('hirerMyJobsHeading')}
+              Job & Shift Management
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 mt-0.5">
-              सक्रिय, पूर्ण और आपकी समस्त नियुक्तियां एक जगह
+              Active shifts, completed milestones, and workforce assignments
             </p>
           </div>
 
@@ -65,16 +65,16 @@ export const MyJobsPage: React.FC = () => {
             className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs sm:text-sm shadow-md transition-all self-start sm:self-auto shrink-0"
           >
             <PlusCircle className="w-4 h-4" />
-            <span>+ नया काम पोस्ट करें</span>
+            <span>+ Post New Job</span>
           </Link>
         </div>
 
         {/* 3-Tab Switcher */}
         <div className="flex items-center gap-1 bg-slate-200/80 p-1.5 rounded-2xl">
           {[
-            { key: 'active', label: `सक्रिय (${activeJobs.length})`, icon: Clock },
-            { key: 'completed', label: `पूर्ण (${completedJobs.length})`, icon: CheckCircle2 },
-            { key: 'hires', label: `नियुक्तियां (${hires.length})`, icon: Users },
+            { key: 'active', label: `Active (${activeJobs.length})`, icon: Clock },
+            { key: 'completed', label: `Completed (${completedJobs.length})`, icon: CheckCircle2 },
+            { key: 'hires', label: `Hires (${hires.length})`, icon: Users },
           ].map(({ key, label, icon: Icon }) => (
             <button
               key={key}

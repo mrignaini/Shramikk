@@ -24,7 +24,8 @@ dist-ssr
 *.sw?
 
 # Backend local configuration & files
-backend/.env
+backend/
+.env
 backend/node_modules/
 backend/dist/
 

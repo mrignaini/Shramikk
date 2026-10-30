@@ -45,7 +45,9 @@ import {
 interface Scenario {
   id: string;
   jobTitle: string;
+  jobTitleHi: string;
   jobDescription: string;
+  jobDescriptionHi: string;
   workerName: string;
   workerSkill: string;
   workerRating: number;
@@ -60,7 +62,9 @@ const DEMO_SCENARIOS: Scenario[] = [
   {
     id: 'sc-1',
     jobTitle: 'Boundary Wall Construction & Masonry',
+    jobTitleHi: 'बाउंड्री वॉल निर्माण एवं राजमिस्त्री कार्य',
     jobDescription: 'Building a 6ft boundary wall with mortar finish and neat brickwork.',
+    jobDescriptionHi: 'मोर्टार फिनिश और साफ ईंट चिनाई के साथ 6 फीट की बाउंड्री वॉल का निर्माण।',
     workerName: 'रमेश कुमार (Ramesh Kumar)',
     workerSkill: 'राजमिस्त्री (Master Mason)',
     workerRating: 4.9,
@@ -73,7 +77,9 @@ const DEMO_SCENARIOS: Scenario[] = [
   {
     id: 'sc-2',
     jobTitle: 'Interior Royale Texture Painting',
+    jobTitleHi: 'इंटीरियर रॉयल टेक्सचर पेंटिंग कार्य',
     jobDescription: 'Wall putty, 2 coats primer, and Royale Shine texture paint in 3 bedrooms.',
+    jobDescriptionHi: '3 बेडरूम में वॉल पुट्टी, 2 कोट प्राइमर और रॉयल शाइन टेक्सचर पेंट कार्य।',
     workerName: 'सुरेश कुमार (Suresh Kumar)',
     workerSkill: 'पेंटर (Texture Painter)',
     workerRating: 4.8,
@@ -86,7 +92,9 @@ const DEMO_SCENARIOS: Scenario[] = [
   {
     id: 'sc-3',
     jobTitle: 'Residential Villa Tile & Marble Fitting',
+    jobTitleHi: 'आवासीय विला टाइल एवं मार्बल फिटिंग',
     jobDescription: 'Italian marble laying and bathroom tile fitting with precision leveling.',
+    jobDescriptionHi: 'सटीक लेवलिंग के साथ इटैलियन मार्बल फिटिंग और बाथरूम टाइल लगाना।',
     workerName: 'राजेश सिंह (Rajesh Singh)',
     workerSkill: 'टाइल मिस्त्री (Tile Specialist)',
     workerRating: 5.0,
@@ -112,12 +120,12 @@ const PAYMENT_METHODS: {
 ];
 
 const TIMELINE_STEPS = [
-  { status: 'CREATED', title: 'Payment Initiated', desc: 'Hirer selects work record' },
-  { status: 'PAID', title: 'Payment Verified', desc: 'Simulated gateway authorization' },
-  { status: 'FUNDS_LOCKED', title: '🔒 Funds Locked', desc: 'Protected in SHRAMIKK Escrow' },
-  { status: 'WORK_COMPLETED', title: 'Work Completed', desc: 'Worker completes assigned shift' },
-  { status: 'RELEASE_PENDING', title: 'Hirer Confirmed', desc: 'Hirer reviews & confirms work' },
-  { status: 'RELEASED', title: '✓ Payment Released', desc: 'Funds credited to worker' },
+  { status: 'CREATED', titleEn: 'Payment Initiated', titleHi: 'भुगतान आरंभ', descEn: 'Hirer selects work record', descHi: 'नियोक्ता कार्य रिकॉर्ड चुनता है' },
+  { status: 'PAID', titleEn: 'Payment Verified', titleHi: 'भुगतान सत्यापन', descEn: 'Simulated gateway authorization', descHi: 'गेटवे प्राधिकरण पूर्ण' },
+  { status: 'FUNDS_LOCKED', titleEn: '🔒 Funds Locked', titleHi: '🔒 एस्क्रो में सुरक्षित', descEn: 'Protected in SHRAMIKK Escrow', descHi: 'SHRAMIKK एस्क्रो में राशि जमा' },
+  { status: 'WORK_COMPLETED', titleEn: 'Work Completed', titleHi: 'कार्य पूर्ण', descEn: 'Worker completes assigned shift', descHi: 'कामगार ने शिफ्ट कार्य पूरा किया' },
+  { status: 'RELEASE_PENDING', titleEn: 'Hirer Confirmed', titleHi: 'नियोक्ता पुष्टि', descEn: 'Hirer reviews & confirms work', descHi: 'नियोक्ता ने काम की पुष्टि की' },
+  { status: 'RELEASED', titleEn: '✓ Payment Released', titleHi: '✓ मजदूरी जारी', descEn: 'Funds credited to worker', descHi: 'राशि कामगार के खाते में जमा' },
 ];
 
 const STATUS_PROGRESS: Record<PaymentStatus, number> = {
@@ -258,30 +266,34 @@ export const PaymentGatewayPage: React.FC = () => {
             <div className="space-y-3">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-xs font-black tracking-wide uppercase">
                 <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-                <span>SHRAMIKK Secure Payment · Escrow Demo</span>
+                <span>{language === 'hi' ? 'SHRAMIKK सुरक्षित भुगतान · एस्क्रो डेमो' : 'SHRAMIKK Secure Payment · Escrow Demo'}</span>
               </div>
               <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-white font-sans">
-                Secure Work Escrow & Milestone Release
+                {language === 'hi' ? 'सुरक्षित कार्य एस्क्रो एवं भुगतान रिलीज' : 'Secure Work Escrow & Milestone Release'}
               </h1>
               <p className="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
-                Experience SHRAMIKK’s core trust protocol: Hirer locks payment in escrow upfront, the worker executes the job with confidence, and funds are released immediately upon work confirmation.
+                {language === 'hi'
+                  ? 'SHRAMIKK का विश्वसनीय एस्क्रो प्रोटोकॉल: काम शुरू होने से पहले ही नियोक्ता का पैसा एस्क्रो में सुरक्षित जमा होता है, कामगार बेफिक्र होकर काम करता है, और पुष्टि होते ही तुरंत भुगतान जारी होता है।'
+                  : 'Experience SHRAMIKK’s core trust protocol: Hirer locks payment in escrow upfront, the worker executes the job with confidence, and funds are released immediately upon work confirmation.'}
               </p>
             </div>
 
             {/* Quick Demo Mode Badge */}
             <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md flex flex-col gap-2 shrink-0 max-w-xs">
               <div className="flex items-center justify-between text-xs text-slate-300">
-                <span className="font-semibold">Demo Gateway Engine</span>
+                <span className="font-semibold">{language === 'hi' ? 'डेमो गेटवे इंजन' : 'Demo Gateway Engine'}</span>
                 <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold">
-                  ACTIVE
+                  {language === 'hi' ? 'सक्रिय' : 'ACTIVE'}
                 </span>
               </div>
               <p className="text-[11px] text-slate-400 leading-snug">
-                Simulated zero-risk sandbox. No real money or bank accounts are debited.
+                {language === 'hi'
+                  ? 'सिम्युलेटेड शून्य-जोखिम सैंडबॉक्स। किसी वास्तविक बैंक खाते से पैसे नहीं कटते।'
+                  : 'Simulated zero-risk sandbox. No real money or bank accounts are debited.'}
               </p>
               <div className="flex items-center gap-2 pt-1 border-t border-white/10 text-[11px] text-amber-300 font-mono font-medium">
                 <Lock className="w-3.5 h-3.5 text-amber-400" />
-                <span>Neon PostgreSQL Synced</span>
+                <span>{language === 'hi' ? 'क्लाउड डेटाबेस सिंक' : 'Neon PostgreSQL Synced'}</span>
               </div>
             </div>
           </div>
@@ -299,7 +311,7 @@ export const PaymentGatewayPage: React.FC = () => {
                 }`}
               >
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Full Escrow Simulator</span>
+                <span>{language === 'hi' ? 'एस्क्रो सिम्युलेटर' : 'Full Escrow Simulator'}</span>
               </button>
               <button
                 type="button"
@@ -311,7 +323,7 @@ export const PaymentGatewayPage: React.FC = () => {
                 }`}
               >
                 <Building className="w-3.5 h-3.5 text-amber-600" />
-                <span>Hirer Perspective</span>
+                <span>{language === 'hi' ? 'नियोक्ता दृष्टिकोण' : 'Hirer Perspective'}</span>
               </button>
               <button
                 type="button"
@@ -323,7 +335,7 @@ export const PaymentGatewayPage: React.FC = () => {
                 }`}
               >
                 <User className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Worker Perspective</span>
+                <span>{language === 'hi' ? 'कामगार दृष्टिकोण' : 'Worker Perspective'}</span>
               </button>
             </div>
 
@@ -333,7 +345,7 @@ export const PaymentGatewayPage: React.FC = () => {
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 text-xs font-semibold transition-colors border border-white/10"
             >
               <RefreshCw className="w-3.5 h-3.5" />
-              <span>Reset Simulator</span>
+              <span>{language === 'hi' ? 'सिम्युलेटर रीसेट करें' : 'Reset Simulator'}</span>
             </button>
           </div>
         </div>
@@ -345,19 +357,19 @@ export const PaymentGatewayPage: React.FC = () => {
         {/* Scenario Selection Pills */}
         <div className="bg-white rounded-2xl p-3 shadow-sm border border-slate-200/80 mb-6 flex items-center gap-2 overflow-x-auto">
           <span className="text-xs font-bold text-slate-400 uppercase tracking-wider px-2 shrink-0">
-            Work Scenarios:
+            {language === 'hi' ? 'कार्य परिदृश्य:' : 'Work Scenarios:'}
           </span>
           {DEMO_SCENARIOS.map((sc) => (
             <button
               key={sc.id}
               onClick={() => handleSelectScenario(sc)}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-2 shrink-0 border ${
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-2 shrink-0 border cursor-pointer ${
                 selectedScenario.id === sc.id
                   ? 'bg-[#0B132B] text-amber-300 border-[#0B132B] shadow-sm'
                   : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
               }`}
             >
-              <span>{sc.jobTitle}</span>
+              <span>{language === 'hi' ? sc.jobTitleHi : sc.jobTitle}</span>
               <span className="px-1.5 py-0.5 rounded bg-amber-400/20 text-amber-400 font-extrabold text-[10px]">
                 ₹{sc.amount}
               </span>
@@ -370,16 +382,16 @@ export const PaymentGatewayPage: React.FC = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-100">
             <div>
               <span className="text-[11px] font-extrabold text-amber-700 uppercase tracking-wider">
-                State Machine Lifecycle
+                {language === 'hi' ? 'एस्क्रो जीवनचक्र स्थिति' : 'State Machine Lifecycle'}
               </span>
               <h2 className="text-xl font-extrabold text-[#0B132B]">
-                Escrow Status & Progression
+                {language === 'hi' ? 'एस्क्रो प्रगति एवं सुरक्षा चरण' : 'Escrow Status & Progression'}
               </h2>
             </div>
 
             {/* Current State Pill */}
             <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-400">Current Status:</span>
+              <span className="text-xs text-slate-400">{language === 'hi' ? 'वर्तमान स्थिति:' : 'Current Status:'}</span>
               <span className={`px-3.5 py-1.5 rounded-full text-xs font-black border flex items-center gap-1.5 shadow-2xs ${
                 simStatus === 'RELEASED'
                   ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
@@ -397,14 +409,14 @@ export const PaymentGatewayPage: React.FC = () => {
                 {simStatus === 'RELEASED' && <CheckCircle className="w-3.5 h-3.5" />}
                 {simStatus === 'FAILED' && <AlertCircle className="w-3.5 h-3.5" />}
                 <span>
-                  {simStatus === 'CREATED' && '1. CREATED (Pending Hirer Payment)'}
-                  {simStatus === 'PAYMENT_PENDING' && '2. PAYMENT_PENDING (Processing)'}
-                  {simStatus === 'PAID' && '3. PAID (Authorized)'}
-                  {simStatus === 'FUNDS_LOCKED' && '4. FUNDS_LOCKED (🔒 Escrow Secured)'}
-                  {simStatus === 'WORK_COMPLETED' && '5. WORK_COMPLETED (Shift Done)'}
-                  {simStatus === 'RELEASE_PENDING' && '6. RELEASE_PENDING (Awaiting Release)'}
-                  {simStatus === 'RELEASED' && '7. RELEASED (✓ Worker Paid)'}
-                  {simStatus === 'FAILED' && '✕ FAILED (No funds locked)'}
+                  {simStatus === 'CREATED' && (language === 'hi' ? '1. आरंभ (भुगतान प्रतीक्षारत)' : '1. CREATED (Pending Hirer Payment)')}
+                  {simStatus === 'PAYMENT_PENDING' && (language === 'hi' ? '2. प्रक्रियाधीन' : '2. PAYMENT_PENDING (Processing)')}
+                  {simStatus === 'PAID' && (language === 'hi' ? '3. अधिकृत' : '3. PAID (Authorized)')}
+                  {simStatus === 'FUNDS_LOCKED' && (language === 'hi' ? '4. सुरक्षित (🔒 एस्क्रो में जमा)' : '4. FUNDS_LOCKED (🔒 Escrow Secured)')}
+                  {simStatus === 'WORK_COMPLETED' && (language === 'hi' ? '5. कार्य पूर्ण (कामगार द्वारा संपन्न)' : '5. WORK_COMPLETED (Shift Done)')}
+                  {simStatus === 'RELEASE_PENDING' && (language === 'hi' ? '6. समीक्षा पूर्ण (रिलीज प्रतीक्षारत)' : '6. RELEASE_PENDING (Awaiting Release)')}
+                  {simStatus === 'RELEASED' && (language === 'hi' ? '7. जारी (✓ कामगार को भुगतान संपन्न)' : '7. RELEASED (✓ Worker Paid)')}
+                  {simStatus === 'FAILED' && (language === 'hi' ? '✕ विफल' : '✕ FAILED (No funds locked)')}
                 </span>
               </span>
             </div>
@@ -444,15 +456,15 @@ export const PaymentGatewayPage: React.FC = () => {
                       )}
                     </div>
                     <h4 className="text-xs font-black text-slate-900 leading-tight">
-                      {step.title}
+                      {language === 'hi' ? step.titleHi : step.titleEn}
                     </h4>
                     <p className="text-[10px] text-slate-500 mt-1 leading-snug">
-                      {step.desc}
+                      {language === 'hi' ? step.descHi : step.descEn}
                     </p>
                   </div>
 
                   <div className="mt-3 pt-2 border-t border-slate-200/60 text-[9px] font-mono font-bold text-slate-400 uppercase">
-                    STEP {idx + 1}
+                    {language === 'hi' ? `चरण ${idx + 1}` : `STEP ${idx + 1}`}
                   </div>
                 </div>
               );
@@ -475,16 +487,16 @@ export const PaymentGatewayPage: React.FC = () => {
                   </div>
                   <div>
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 uppercase">
-                      Hired WorkRecord #WR-2026-08
+                      {language === 'hi' ? 'सत्यापित कार्य रिकॉर्ड #WR-2026-08' : 'Hired WorkRecord #WR-2026-08'}
                     </span>
                     <h3 className="text-lg font-black text-[#0B132B] mt-0.5">
-                      {selectedScenario.jobTitle}
+                      {language === 'hi' ? selectedScenario.jobTitleHi : selectedScenario.jobTitle}
                     </h3>
                   </div>
                 </div>
 
                 <div className="text-left sm:text-right">
-                  <span className="text-xs text-slate-400 block">Total Agreed Wage</span>
+                  <span className="text-xs text-slate-400 block">{language === 'hi' ? 'कुल तय मजदूरी' : 'Total Agreed Wage'}</span>
                   <span className="text-2xl font-black text-[#0B132B] font-sans">
                     ₹{selectedScenario.amount.toLocaleString('en-IN')}
                   </span>
@@ -494,12 +506,12 @@ export const PaymentGatewayPage: React.FC = () => {
               {/* Work Details & Stakeholders */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
                 <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                  <span className="text-slate-400 block font-medium">Worker Information</span>
+                  <span className="text-slate-400 block font-medium">{language === 'hi' ? 'कामगार विवरण' : 'Worker Information'}</span>
                   <p className="font-extrabold text-slate-900 text-sm">{selectedScenario.workerName}</p>
                   <p className="text-slate-600">{selectedScenario.workerSkill} · ★ {selectedScenario.workerRating}</p>
                 </div>
                 <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                  <span className="text-slate-400 block font-medium">Hirer / Contractor</span>
+                  <span className="text-slate-400 block font-medium">{language === 'hi' ? 'नियोक्ता / ठेकेदार' : 'Hirer / Contractor'}</span>
                   <p className="font-extrabold text-slate-900 text-sm">{selectedScenario.hirerName}</p>
                   <p className="text-slate-600">📍 {selectedScenario.location}</p>
                 </div>
@@ -519,7 +531,7 @@ export const PaymentGatewayPage: React.FC = () => {
                 <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
                   <span>Interactive Action Trigger:</span>
                   <span className="text-amber-800 font-bold">
-                    Mode: {perspective.toUpperCase()}
+                    {language === 'hi' ? `मोड: ${perspective.toUpperCase()}` : `Mode: ${perspective.toUpperCase()}`}
                   </span>
                 </div>
 
@@ -529,10 +541,10 @@ export const PaymentGatewayPage: React.FC = () => {
                     <button
                       type="button"
                       onClick={handleOpenCheckout}
-                      className="w-full sm:flex-1 py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#0B132B] to-[#1C3A6E] text-white font-extrabold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0"
+                      className="w-full sm:flex-1 py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#0B132B] to-[#1C3A6E] text-white font-extrabold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                     >
                       <Lock className="w-4 h-4 text-amber-400" />
-                      <span>Initiate & Secure Payment ₹{selectedScenario.amount}</span>
+                      <span>{language === 'hi' ? `धनराशि एस्क्रो में जमा करें ₹${selectedScenario.amount}` : `Initiate & Secure Payment ₹${selectedScenario.amount}`}</span>
                     </button>
                   </div>
                 )}
@@ -543,22 +555,24 @@ export const PaymentGatewayPage: React.FC = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-indigo-900 font-extrabold text-sm">
                         <Lock className="w-4 h-4 text-indigo-600" />
-                        <span>Payment Secured in Escrow (₹{selectedScenario.amount})</span>
+                        <span>{language === 'hi' ? `भुगतान एस्क्रो में सुरक्षित (₹${selectedScenario.amount})` : `Payment Secured in Escrow (₹${selectedScenario.amount})`}</span>
                       </div>
                       <span className="text-[10px] font-mono bg-indigo-200/80 text-indigo-950 px-2 py-0.5 rounded font-bold">
                         {demoPayId}
                       </span>
                     </div>
                     <p className="text-xs text-indigo-700">
-                      Funds are locked. The worker can now begin/complete the assigned work.
+                      {language === 'hi'
+                        ? 'धनराशि एस्क्रो में सुरक्षित है। कामगार अब काम शुरू व पूरा कर सकता है।'
+                        : 'Funds are locked. The worker can now begin/complete the assigned work.'}
                     </p>
                     <button
                       type="button"
                       onClick={handleWorkerCompleteWork}
-                      className="w-full py-3 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-1.5"
+                      className="w-full py-3 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <CheckCircle className="w-4 h-4" />
-                      <span>Worker: Mark Work as Completed</span>
+                      <span>{language === 'hi' ? 'कामगार: कार्य पूरा हुआ मार्क करें' : 'Worker: Mark Work as Completed'}</span>
                     </button>
                   </div>
                 )}
@@ -569,22 +583,24 @@ export const PaymentGatewayPage: React.FC = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-teal-900 font-extrabold text-sm">
                         <CheckCircle className="w-4 h-4 text-teal-600" />
-                        <span>Work Completed by Worker!</span>
+                        <span>{language === 'hi' ? 'कामगार द्वारा कार्य पूर्ण!' : 'Work Completed by Worker!'}</span>
                       </div>
                       <span className="text-[10px] font-bold text-teal-800 bg-teal-200/70 px-2 py-0.5 rounded">
-                        Inspection Phase
+                        {language === 'hi' ? 'गुणवत्ता जांच चरण' : 'Inspection Phase'}
                       </span>
                     </div>
                     <p className="text-xs text-teal-700">
-                      The worker has reported work completion. Hirer must verify the quality before releasing the locked payment.
+                      {language === 'hi'
+                        ? 'कामगार ने कार्य पूरा होने की सूचना दी है। नियोक्ता काम की जांच करके भुगतान रिलीज की पुष्टि करे।'
+                        : 'The worker has reported work completion. Hirer must verify the quality before releasing the locked payment.'}
                     </p>
                     <button
                       type="button"
                       onClick={handleHirerConfirmWork}
-                      className="w-full py-3 px-5 rounded-xl bg-[#0B132B] hover:bg-slate-800 text-amber-400 font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-1.5"
+                      className="w-full py-3 px-5 rounded-xl bg-[#0B132B] hover:bg-slate-800 text-amber-400 font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <Check className="w-4 h-4" />
-                      <span>Hirer: Confirm Work Quality & Prepare Release</span>
+                      <span>{language === 'hi' ? 'नियोक्ता: कार्य गुणवत्ता प्रमाणित कर रिलीज तैयार करें' : 'Hirer: Confirm Work Quality & Prepare Release'}</span>
                     </button>
                   </div>
                 )}
@@ -595,19 +611,21 @@ export const PaymentGatewayPage: React.FC = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-purple-900 font-extrabold text-sm">
                         <ShieldCheck className="w-4 h-4 text-purple-600" />
-                        <span>Work Confirmed · Ready to Release</span>
+                        <span>{language === 'hi' ? 'कार्य प्रमाणित · भुगतान रिलीज के लिए तैयार' : 'Work Confirmed · Ready to Release'}</span>
                       </div>
                     </div>
                     <p className="text-xs text-purple-700">
-                      Both parties verified the work. Click below to transfer locked funds directly to the worker’s balance.
+                      {language === 'hi'
+                        ? 'दोनों पक्षों ने कार्य का सत्यापन कर लिया है। सुरक्षित धनराशि कामगार के खाते में स्थानांतरित करने के लिए नीचे क्लिक करें।'
+                        : 'Both parties verified the work. Click below to transfer locked funds directly to the worker’s balance.'}
                     </p>
                     <button
                       type="button"
                       onClick={handleOpenReleaseModal}
-                      className="w-full py-3 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-1.5"
+                      className="w-full py-3 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <CheckCircle className="w-4 h-4" />
-                      <span>Confirm & Release Escrow Payment (₹{selectedScenario.amount})</span>
+                      <span>{language === 'hi' ? `एस्क्रो भुगतान जारी करें (₹${selectedScenario.amount})` : `Confirm & Release Escrow Payment (₹${selectedScenario.amount})`}</span>
                     </button>
                   </div>
                 )}
@@ -618,14 +636,16 @@ export const PaymentGatewayPage: React.FC = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-emerald-900 font-extrabold text-sm">
                         <CheckCircle className="w-5 h-5 text-emerald-600" />
-                        <span>Payment Released Successfully!</span>
+                        <span>{language === 'hi' ? 'भुगतान सफलतापूर्वक जारी किया गया!' : 'Payment Released Successfully!'}</span>
                       </div>
                       <span className="text-[10px] font-mono bg-emerald-200 text-emerald-950 px-2 py-0.5 rounded font-bold">
                         {demoPayId}
                       </span>
                     </div>
                     <p className="text-xs text-emerald-700">
-                      ₹{selectedScenario.amount.toLocaleString('en-IN')} has been safely released to {selectedScenario.workerName}. Worker ledger updated.
+                      {language === 'hi'
+                        ? `₹${selectedScenario.amount.toLocaleString('en-IN')} सुरक्षित रूप से ${selectedScenario.workerName} को जारी कर दिए गए हैं। कामगार लेज़र अपडेट हो गया है।`
+                        : `₹${selectedScenario.amount.toLocaleString('en-IN')} has been safely released to ${selectedScenario.workerName}. Worker ledger updated.`}
                     </p>
                     <div className="flex items-center gap-2">
                       <button
@@ -674,29 +694,43 @@ export const PaymentGatewayPage: React.FC = () => {
             <div className="bg-[#0B132B] text-white rounded-[28px] p-6 shadow-xl border border-slate-800 space-y-4">
               <div className="flex items-center gap-2 text-amber-400 font-bold text-xs uppercase tracking-wider">
                 <Shield className="w-4 h-4" />
-                <span>Future-Ready Payment Architecture</span>
+                <span>{language === 'hi' ? 'भविष्य-उन्मुख भुगतान आर्किटेक्चर' : 'Future-Ready Payment Architecture'}</span>
               </div>
               <h3 className="text-lg font-black">
-                How SHRAMIKK Bridges Informal Labour with Instant Trust
+                {language === 'hi'
+                  ? 'SHRAMIKK कैसे दैनिक श्रम में तुरंत विश्वास स्थापित करता है'
+                  : 'How SHRAMIKK Bridges Informal Labour with Instant Trust'}
               </h3>
               
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs pt-1">
                 <div className="p-3 rounded-xl bg-white/5 border border-white/10 space-y-1">
-                  <span className="text-amber-400 font-bold block">1. Zero Wage Default</span>
+                  <span className="text-amber-400 font-bold block">
+                    {language === 'hi' ? '1. शून्य मजदूरी डिफ़ॉल्ट' : '1. Zero Wage Default'}
+                  </span>
                   <p className="text-slate-300 text-[11px] leading-relaxed">
-                    Workers are guaranteed payment before setting foot on site because money is locked in escrow.
+                    {language === 'hi'
+                      ? 'कार्यस्थल पर पहुंचने से पहले ही कामगार की मजदूरी एस्क्रो में सुरक्षित जमा होती है।'
+                      : 'Workers are guaranteed payment before setting foot on site because money is locked in escrow.'}
                   </p>
                 </div>
                 <div className="p-3 rounded-xl bg-white/5 border border-white/10 space-y-1">
-                  <span className="text-emerald-400 font-bold block">2. Quality Assurance</span>
+                  <span className="text-emerald-400 font-bold block">
+                    {language === 'hi' ? '2. कार्य गुणवत्ता आश्वासन' : '2. Quality Assurance'}
+                  </span>
                   <p className="text-slate-300 text-[11px] leading-relaxed">
-                    Hirers hold release authority until satisfactory completion of masonry, painting, or plumbing tasks.
+                    {language === 'hi'
+                      ? 'राजमिस्त्री, पेंटिंग या प्लंबिंग कार्य संतोषजनक पूरा होने तक नियोक्ता के पास रिलीज का अधिकार रहता है।'
+                      : 'Hirers hold release authority until satisfactory completion of masonry, painting, or plumbing tasks.'}
                   </p>
                 </div>
                 <div className="p-3 rounded-xl bg-white/5 border border-white/10 space-y-1">
-                  <span className="text-amber-300 font-bold block">3. Razorpay Ready</span>
+                  <span className="text-amber-300 font-bold block">
+                    {language === 'hi' ? '3. मानक गेटवे तैयार' : '3. Razorpay Ready'}
+                  </span>
                   <p className="text-slate-300 text-[11px] leading-relaxed">
-                    Standardized <code className="text-amber-200">IPaymentProvider</code> interface ready for drop-in production gateway keys.
+                    {language === 'hi'
+                      ? 'IPaymentProvider इंटरफेस के माध्यम से किसी भी प्रोडक्शन गेटवे से जोड़ने के लिए तैयार।'
+                      : 'Standardized IPaymentProvider interface ready for drop-in production gateway keys.'}
                   </p>
                 </div>
               </div>
@@ -711,52 +745,52 @@ export const PaymentGatewayPage: React.FC = () => {
             <div className="bg-white rounded-[28px] p-6 shadow-card border border-slate-200/90 space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                 <h4 className="text-sm font-extrabold text-[#0B132B]">
-                  Escrow Vault Summary
+                  {language === 'hi' ? 'एस्क्रो तिजोरी सारांश' : 'Escrow Vault Summary'}
                 </h4>
                 <span className="text-[10px] font-bold text-slate-400">
-                  LIVE STATUS
+                  {language === 'hi' ? 'लाइव स्थिति' : 'LIVE STATUS'}
                 </span>
               </div>
 
               {/* Status Header */}
               <div className="text-center py-3 bg-slate-50 rounded-2xl border border-slate-100 space-y-1">
-                <p className="text-[11px] text-slate-500 font-medium">Secured Amount</p>
+                <p className="text-[11px] text-slate-500 font-medium">{language === 'hi' ? 'सुरक्षित धनराशि' : 'Secured Amount'}</p>
                 <p className="text-3xl font-extrabold text-[#0B132B]">
                   ₹{selectedScenario.amount.toLocaleString('en-IN')}
                 </p>
                 <p className="text-[11px] text-slate-400">
-                  Currency: INR (₹) · 100% Protected
+                  {language === 'hi' ? 'मुद्रा: भारतीय रुपया (₹) · 100% सुरक्षित' : 'Currency: INR (₹) · 100% Protected'}
                 </p>
               </div>
 
               {/* Transaction Meta Details */}
               <div className="space-y-2.5 text-xs">
                 <div className="flex justify-between py-1 border-b border-slate-100">
-                  <span className="text-slate-400">Transaction ID</span>
+                  <span className="text-slate-400">{language === 'hi' ? 'लेनदेन संख्या (ID)' : 'Transaction ID'}</span>
                   <div className="flex items-center gap-1">
                     <span className="font-mono font-bold text-slate-800">{demoPayId}</span>
-                    <button onClick={copyDemoId} title="Copy ID" className="text-slate-400 hover:text-slate-600">
+                    <button onClick={copyDemoId} title="Copy ID" className="text-slate-400 hover:text-slate-600 cursor-pointer">
                       {copiedId ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
                     </button>
                   </div>
                 </div>
 
                 <div className="flex justify-between py-1 border-b border-slate-100">
-                  <span className="text-slate-400">Payment Channel</span>
+                  <span className="text-slate-400">{language === 'hi' ? 'भुगतान माध्यम' : 'Payment Channel'}</span>
                   <span className="font-semibold text-slate-800">{selectedMethod} (Demo)</span>
                 </div>
 
                 <div className="flex justify-between py-1 border-b border-slate-100">
-                  <span className="text-slate-400">Hirer Confirmed</span>
+                  <span className="text-slate-400">{language === 'hi' ? 'नियोक्ता पुष्टि' : 'Hirer Confirmed'}</span>
                   <span className={`font-bold ${simStatus === 'RELEASE_PENDING' || simStatus === 'RELEASED' ? 'text-emerald-600' : 'text-slate-400'}`}>
-                    {simStatus === 'RELEASE_PENDING' || simStatus === 'RELEASED' ? '✓ Yes' : 'Pending'}
+                    {simStatus === 'RELEASE_PENDING' || simStatus === 'RELEASED' ? (language === 'hi' ? '✓ हाँ' : '✓ Yes') : (language === 'hi' ? 'प्रतीक्षारत' : 'Pending')}
                   </span>
                 </div>
 
                 <div className="flex justify-between py-1">
-                  <span className="text-slate-400">Worker Confirmed</span>
+                  <span className="text-slate-400">{language === 'hi' ? 'कामगार पुष्टि' : 'Worker Confirmed'}</span>
                   <span className={`font-bold ${simStatus === 'RELEASED' ? 'text-emerald-600' : 'text-slate-400'}`}>
-                    {simStatus === 'RELEASED' ? '✓ Credited' : 'Pending'}
+                    {simStatus === 'RELEASED' ? (language === 'hi' ? '✓ क्रेडिटेड' : '✓ Credited') : (language === 'hi' ? 'प्रतीक्षारत' : 'Pending')}
                   </span>
                 </div>
               </div>
@@ -766,10 +800,10 @@ export const PaymentGatewayPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsReceiptModalOpen(true)}
-                  className="w-full py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold text-xs border border-amber-200 transition-colors flex items-center justify-center gap-1.5"
+                  className="w-full py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold text-xs border border-amber-200 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <FileText className="w-3.5 h-3.5 text-amber-700" />
-                  <span>Download / Print Slip</span>
+                  <span>{language === 'hi' ? 'वेतन पर्ची डाउनलोड / प्रिंट' : 'Download / Print Slip'}</span>
                 </button>
               )}
             </div>
@@ -777,29 +811,33 @@ export const PaymentGatewayPage: React.FC = () => {
             {/* Perspective Quick Cards */}
             <div className="bg-gradient-to-br from-slate-900 to-[#101C3D] text-white rounded-[28px] p-6 shadow-card space-y-4">
               <h4 className="text-xs font-black uppercase text-amber-400 tracking-wider">
-                Two-Sided Perspective Demo
+                {language === 'hi' ? 'दो-तरफ़ा दृष्टिकोण डेमो' : 'Two-Sided Perspective Demo'}
               </h4>
 
               <div className="space-y-3">
                 {/* Hirer Card */}
                 <div className="p-3.5 rounded-2xl bg-white/10 border border-white/10 space-y-1">
                   <div className="flex items-center justify-between text-xs font-bold text-amber-300">
-                    <span>Hirer Experience</span>
+                    <span>{language === 'hi' ? 'नियोक्ता अनुभव' : 'Hirer Experience'}</span>
                     <Building className="w-3.5 h-3.5" />
                   </div>
                   <p className="text-[11px] text-slate-300 leading-snug">
-                    Hirer pays with 1-click upfront. If work is unsatisfactory, dispute resolution is triggered before any funds leave the vault.
+                    {language === 'hi'
+                      ? 'नियोक्ता 1-क्लिक से सुरक्षित एस्क्रो में पैसे जमा करता है। असंतोष की स्थिति में समाधान प्रक्रिया उपलब्ध है।'
+                      : 'Hirer pays with 1-click upfront. If work is unsatisfactory, dispute resolution is triggered before any funds leave the vault.'}
                   </p>
                 </div>
 
                 {/* Worker Card */}
                 <div className="p-3.5 rounded-2xl bg-white/10 border border-white/10 space-y-1">
                   <div className="flex items-center justify-between text-xs font-bold text-emerald-300">
-                    <span>Worker Experience</span>
+                    <span>{language === 'hi' ? 'कामगार अनुभव' : 'Worker Experience'}</span>
                     <User className="w-3.5 h-3.5" />
                   </div>
                   <p className="text-[11px] text-slate-300 leading-snug">
-                    Worker gets immediate notification: "🔒 ₹{selectedScenario.amount} Secured". They perform the work knowing wage default is impossible.
+                    {language === 'hi'
+                      ? `कामगार को तुरंत सूचना मिलती है: "🔒 ₹${selectedScenario.amount} एस्क्रो में सुरक्षित"। बिना किसी संशय के काम संपन्न होता है।`
+                      : `Worker gets immediate notification: "🔒 ₹${selectedScenario.amount} Secured". They perform the work knowing wage default is impossible.`}
                   </p>
                 </div>
               </div>
@@ -822,13 +860,17 @@ export const PaymentGatewayPage: React.FC = () => {
                   <ShieldCheck className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-sm text-white">SHRAMIKK Secure Payment</h3>
-                  <p className="text-[10px] text-amber-300">Escrow Checkout · Demo Mode</p>
+                  <h3 className="font-extrabold text-sm text-white">
+                    {language === 'hi' ? 'SHRAMIKK सुरक्षित भुगतान' : 'SHRAMIKK Secure Payment'}
+                  </h3>
+                  <p className="text-[10px] text-amber-300">
+                    {language === 'hi' ? 'एस्क्रो चेकआउट · डेमो मोड' : 'Escrow Checkout · Demo Mode'}
+                  </p>
                 </div>
               </div>
               <button
                 onClick={() => setIsCheckoutOpen(false)}
-                className="p-1 rounded-full text-slate-400 hover:text-white hover:bg-white/10"
+                className="p-1 rounded-full text-slate-400 hover:text-white hover:bg-white/10 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -840,15 +882,17 @@ export const PaymentGatewayPage: React.FC = () => {
                 <div className="space-y-5">
                   {/* Amount Summary */}
                   <div className="text-center py-3 bg-slate-50 rounded-2xl border border-slate-100">
-                    <span className="text-xs text-slate-400 font-medium">Payment to Lock in Escrow</span>
+                    <span className="text-xs text-slate-400 font-medium">
+                      {language === 'hi' ? 'एस्क्रो में जमा होने वाली राशि' : 'Payment to Lock in Escrow'}
+                    </span>
                     <p className="text-3xl font-black text-[#0B132B] mt-0.5">
                       ₹{selectedScenario.amount.toLocaleString('en-IN')}
                     </p>
                     <p className="text-xs text-slate-600 mt-1 font-semibold">
-                      {selectedScenario.jobTitle}
+                      {language === 'hi' ? selectedScenario.jobTitleHi : selectedScenario.jobTitle}
                     </p>
                     <p className="text-[11px] text-slate-400">
-                      Beneficiary Worker: {selectedScenario.workerName}
+                      {language === 'hi' ? `लाभार्थी कामगार: ${selectedScenario.workerName}` : `Beneficiary Worker: ${selectedScenario.workerName}`}
                     </p>
                   </div>
 
@@ -856,14 +900,17 @@ export const PaymentGatewayPage: React.FC = () => {
                   <div className="p-3.5 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-start gap-2.5">
                     <Lock className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
                     <p className="text-xs text-indigo-800 leading-snug">
-                      <strong>100% Protection:</strong> Your payment will be locked securely until the worker completes the job and you confirm satisfaction.
+                      <strong>{language === 'hi' ? '100% सुरक्षा गारंटी:' : '100% Protection:'}</strong>{' '}
+                      {language === 'hi'
+                        ? 'आपकी धनराशि तब तक सुरक्षित लॉक रहेगी जब तक कामगार कार्य पूरा न करे और आप संतुष्ट न हों।'
+                        : 'Your payment will be locked securely until the worker completes the job and you confirm satisfaction.'}
                     </p>
                   </div>
 
                   {/* Payment Method Selector */}
                   <div>
                     <label className="text-xs font-black text-slate-700 uppercase tracking-wider block mb-2">
-                      Choose Demo Payment Method
+                      {language === 'hi' ? 'डेमो भुगतान माध्यम चुनें' : 'Choose Demo Payment Method'}
                     </label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {PAYMENT_METHODS.map((m) => (
@@ -871,7 +918,7 @@ export const PaymentGatewayPage: React.FC = () => {
                           key={m.id}
                           type="button"
                           onClick={() => setSelectedMethod(m.id)}
-                          className={`p-3 rounded-xl border text-left transition-all flex items-center gap-2.5 ${
+                          className={`p-3 rounded-xl border text-left transition-all flex items-center gap-2.5 cursor-pointer ${
                             selectedMethod === m.id
                               ? 'border-[#0B132B] bg-[#0B132B] text-white shadow-sm'
                               : 'border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-800'
@@ -911,10 +958,12 @@ export const PaymentGatewayPage: React.FC = () => {
                       type="checkbox"
                       checked={simulateFail}
                       onChange={(e) => setSimulateFail(e.target.checked)}
-                      className="w-4 h-4 accent-red-600 rounded"
+                      className="w-4 h-4 accent-red-600 rounded cursor-pointer"
                     />
                     <span className="text-xs text-slate-600 font-medium">
-                      Simulate Gateway Failure scenario (Demo test)
+                      {language === 'hi'
+                        ? 'गेटवे विफलता परिदृश्य का परीक्षण करें (डेमो टेस्ट)'
+                        : 'Simulate Gateway Failure scenario (Demo test)'}
                     </span>
                   </label>
 
@@ -922,10 +971,14 @@ export const PaymentGatewayPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleProcessCheckout}
-                    className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0B132B] to-[#1C3A6E] text-white font-extrabold text-sm shadow-md hover:opacity-95 transition-all flex items-center justify-center gap-2"
+                    className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0B132B] to-[#1C3A6E] text-white font-extrabold text-sm shadow-md hover:opacity-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <Lock className="w-4 h-4 text-amber-400" />
-                    <span>Pay Securely ₹{selectedScenario.amount.toLocaleString('en-IN')}</span>
+                    <span>
+                      {language === 'hi'
+                        ? `सुरक्षित भुगतान करें ₹${selectedScenario.amount.toLocaleString('en-IN')}`
+                        : `Pay Securely ₹${selectedScenario.amount.toLocaleString('en-IN')}`}
+                    </span>
                   </button>
                 </div>
               )}
@@ -936,10 +989,12 @@ export const PaymentGatewayPage: React.FC = () => {
                   <Loader2 className="w-12 h-12 text-[#0B132B] animate-spin mx-auto" />
                   <div>
                     <h4 className="text-base font-extrabold text-slate-900">
-                      Processing Secure Payment…
+                      {language === 'hi' ? 'सुरक्षित भुगतान प्रक्रियाधीन…' : 'Processing Secure Payment…'}
                     </h4>
                     <p className="text-xs text-slate-500 mt-1">
-                      Authorizing with demo payment provider & creating escrow vault
+                      {language === 'hi'
+                        ? 'डेमो भुगतान प्रदाता से पुष्टि और एस्क्रो वॉल्ट निर्माण जारी है'
+                        : 'Authorizing with demo payment provider & creating escrow vault'}
                     </p>
                   </div>
                 </div>
@@ -953,24 +1008,28 @@ export const PaymentGatewayPage: React.FC = () => {
                   </div>
                   <div>
                     <h4 className="text-lg font-black text-emerald-700">
-                      Payment Successful!
+                      {language === 'hi' ? 'भुगतान सफल!' : 'Payment Successful!'}
                     </h4>
                     <p className="text-xs text-slate-600 mt-0.5">
-                      ₹{selectedScenario.amount.toLocaleString('en-IN')} locked safely in escrow
+                      {language === 'hi'
+                        ? `₹${selectedScenario.amount.toLocaleString('en-IN')} एस्क्रो में सुरक्षित जमा`
+                        : `₹${selectedScenario.amount.toLocaleString('en-IN')} locked safely in escrow`}
                     </p>
                   </div>
 
                   <div className="p-4 rounded-2xl bg-indigo-50 border border-indigo-200 text-left space-y-1.5">
                     <div className="flex items-center justify-between text-xs font-bold text-indigo-900">
                       <span className="flex items-center gap-1">
-                        <Lock className="w-3.5 h-3.5" /> FUNDS LOCKED
+                        <Lock className="w-3.5 h-3.5" /> {language === 'hi' ? 'एस्क्रो में सुरक्षित' : 'FUNDS LOCKED'}
                       </span>
                       <span className="font-mono text-[10px] bg-indigo-200 px-2 py-0.5 rounded">
                         {demoPayId}
                       </span>
                     </div>
                     <p className="text-[11px] text-indigo-800 leading-snug">
-                      Your payment is securely held. It will only be released when the worker completes the job and you confirm.
+                      {language === 'hi'
+                        ? 'आपकी धनराशि सुरक्षित रखी गई है। यह केवल तभी जारी की जाएगी जब कामगार काम पूरा करे और आप पुष्टि करें।'
+                        : 'Your payment is securely held. It will only be released when the worker completes the job and you confirm.'}
                     </p>
                   </div>
                 </div>
@@ -984,18 +1043,20 @@ export const PaymentGatewayPage: React.FC = () => {
                   </div>
                   <div>
                     <h4 className="text-lg font-black text-red-600">
-                      Payment Simulation Failed
+                      {language === 'hi' ? 'भुगतान सिमुलेशन विफल' : 'Payment Simulation Failed'}
                     </h4>
                     <p className="text-xs text-slate-500 mt-1">
-                      No money has been debited or locked in escrow.
+                      {language === 'hi'
+                        ? 'कोई धनराशि काटी या एस्क्रो में जमा नहीं की गई है।'
+                        : 'No money has been debited or locked in escrow.'}
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={() => setCheckoutStage('select')}
-                    className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs"
+                    className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs cursor-pointer"
                   >
-                    Try Again
+                    {language === 'hi' ? 'पुनः प्रयास करें' : 'Try Again'}
                   </button>
                 </div>
               )}
@@ -1013,24 +1074,26 @@ export const PaymentGatewayPage: React.FC = () => {
                 <CheckCircle className="w-8 h-8" />
               </div>
               <h3 className="text-lg font-black text-[#0B132B]">
-                Release Payment to Worker?
+                {language === 'hi' ? 'कामगार को भुगतान जारी करें?' : 'Release Payment to Worker?'}
               </h3>
               <p className="text-xs text-slate-500 leading-relaxed">
-                Once confirmed, the locked escrow payment of <strong>₹{selectedScenario.amount.toLocaleString('en-IN')}</strong> will be instantly transferred to <strong>{selectedScenario.workerName}</strong>.
+                {language === 'hi'
+                  ? `पुष्टि करने पर, एस्क्रो में सुरक्षित ₹${selectedScenario.amount.toLocaleString('en-IN')} तुरंत ${selectedScenario.workerName} के खाते में स्थानांतरित कर दिए जाएंगे।`
+                  : `Once confirmed, the locked escrow payment of ₹${selectedScenario.amount.toLocaleString('en-IN')} will be instantly transferred to ${selectedScenario.workerName}.`}
               </p>
             </div>
 
             <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2 text-xs">
               <div className="flex justify-between">
-                <span className="text-slate-400">Worker</span>
+                <span className="text-slate-400">{language === 'hi' ? 'कामगार' : 'Worker'}</span>
                 <span className="font-bold text-slate-800">{selectedScenario.workerName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Work Title</span>
-                <span className="font-bold text-slate-800">{selectedScenario.jobTitle}</span>
+                <span className="text-slate-400">{language === 'hi' ? 'कार्य शीर्षक' : 'Work Title'}</span>
+                <span className="font-bold text-slate-800">{language === 'hi' ? selectedScenario.jobTitleHi : selectedScenario.jobTitle}</span>
               </div>
               <div className="flex justify-between border-t border-slate-200 pt-1.5">
-                <span className="text-slate-500 font-bold">Release Amount</span>
+                <span className="text-slate-500 font-bold">{language === 'hi' ? 'रिलीज राशि' : 'Release Amount'}</span>
                 <span className="font-black text-emerald-700 text-sm">
                   ₹{selectedScenario.amount.toLocaleString('en-IN')}
                 </span>
@@ -1041,22 +1104,22 @@ export const PaymentGatewayPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsReleaseModalOpen(false)}
-                className="flex-1 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs"
+                className="flex-1 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs cursor-pointer"
               >
-                Cancel
+                {language === 'hi' ? 'रद्द करें' : 'Cancel'}
               </button>
               <button
                 type="button"
                 disabled={actionLoading}
                 onClick={handleConfirmRelease}
-                className="flex-1 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-1.5"
+                className="flex-1 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 {actionLoading ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
                   <>
                     <Check className="w-4 h-4" />
-                    <span>Confirm Release</span>
+                    <span>{language === 'hi' ? 'रिलीज की पुष्टि करें' : 'Confirm Release'}</span>
                   </>
                 )}
               </button>
@@ -1073,27 +1136,37 @@ export const PaymentGatewayPage: React.FC = () => {
             <div className="bg-[#0B132B] text-white p-6 text-center relative">
               <button
                 onClick={() => setIsReceiptModalOpen(false)}
-                className="absolute top-4 right-4 text-slate-400 hover:text-white"
+                className="absolute top-4 right-4 text-slate-400 hover:text-white cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-bold mb-2">
                 <ShieldCheck className="w-3.5 h-3.5" />
-                <span>SHRAMIKK Escrow Payment Voucher</span>
+                <span>{language === 'hi' ? 'SHRAMIKK एस्क्रो भुगतान वाउचर' : 'SHRAMIKK Escrow Payment Voucher'}</span>
               </div>
-              <h3 className="text-xl font-black">Official Wage Settlement Slip</h3>
-              <p className="text-slate-400 text-xs mt-0.5">Reference: {demoPayId}</p>
+              <h3 className="text-xl font-black">
+                {language === 'hi' ? 'आधिकारिक वेतन भुगतान पर्ची' : 'Official Wage Settlement Slip'}
+              </h3>
+              <p className="text-slate-400 text-xs mt-0.5">
+                {language === 'hi' ? `संदर्भ संख्या: ${demoPayId}` : `Reference: ${demoPayId}`}
+              </p>
             </div>
 
             {/* Slip Body */}
             <div className="p-6 space-y-4 text-xs">
               <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between">
                 <div>
-                  <span className="text-[11px] text-emerald-800 font-bold block">Status</span>
-                  <span className="text-base font-black text-emerald-700">✓ RELEASED & SETTLED</span>
+                  <span className="text-[11px] text-emerald-800 font-bold block">
+                    {language === 'hi' ? 'स्थिति' : 'Status'}
+                  </span>
+                  <span className="text-base font-black text-emerald-700">
+                    {language === 'hi' ? '✓ जारी एवं संपन्न' : '✓ RELEASED & SETTLED'}
+                  </span>
                 </div>
                 <div className="text-right">
-                  <span className="text-[11px] text-emerald-800 font-bold block">Paid Amount</span>
+                  <span className="text-[11px] text-emerald-800 font-bold block">
+                    {language === 'hi' ? 'भुगतान राशि' : 'Paid Amount'}
+                  </span>
                   <span className="text-xl font-black text-[#0B132B]">
                     ₹{selectedScenario.amount.toLocaleString('en-IN')}
                   </span>
@@ -1102,29 +1175,33 @@ export const PaymentGatewayPage: React.FC = () => {
 
               <div className="space-y-2 py-2 border-y border-slate-100">
                 <div className="flex justify-between py-1">
-                  <span className="text-slate-400">Job Title:</span>
-                  <span className="font-bold text-slate-900">{selectedScenario.jobTitle}</span>
+                  <span className="text-slate-400">{language === 'hi' ? 'कार्य शीर्षक:' : 'Job Title:'}</span>
+                  <span className="font-bold text-slate-900">{language === 'hi' ? selectedScenario.jobTitleHi : selectedScenario.jobTitle}</span>
                 </div>
                 <div className="flex justify-between py-1">
-                  <span className="text-slate-400">Worker (Beneficiary):</span>
+                  <span className="text-slate-400">{language === 'hi' ? 'लाभार्थी कामगार:' : 'Worker (Beneficiary):'}</span>
                   <span className="font-bold text-slate-900">{selectedScenario.workerName}</span>
                 </div>
                 <div className="flex justify-between py-1">
-                  <span className="text-slate-400">Hirer (Contractor):</span>
+                  <span className="text-slate-400">{language === 'hi' ? 'नियोक्ता (ठेकेदार):' : 'Hirer (Contractor):'}</span>
                   <span className="font-bold text-slate-900">{selectedScenario.hirerName}</span>
                 </div>
                 <div className="flex justify-between py-1">
-                  <span className="text-slate-400">Settlement Method:</span>
-                  <span className="font-mono text-slate-800">{selectedMethod} Instant Escrow Release</span>
+                  <span className="text-slate-400">{language === 'hi' ? 'भुगतान विधि:' : 'Settlement Method:'}</span>
+                  <span className="font-mono text-slate-800">
+                    {selectedMethod} {language === 'hi' ? 'त्वरित एस्क्रो रिलीज' : 'Instant Escrow Release'}
+                  </span>
                 </div>
                 <div className="flex justify-between py-1">
-                  <span className="text-slate-400">Settlement Timestamp:</span>
-                  <span className="text-slate-700">{new Date().toLocaleString('en-IN')}</span>
+                  <span className="text-slate-400">{language === 'hi' ? 'भुगतान समय:' : 'Settlement Timestamp:'}</span>
+                  <span className="text-slate-700">{new Date().toLocaleString(language === 'hi' ? 'hi-IN' : 'en-IN')}</span>
                 </div>
               </div>
 
               <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 text-[10px] text-slate-500 text-center">
-                This digital settlement voucher confirms full mutual sign-off and is stored permanently in the SHRAMIKK Neon PostgreSQL audit trail.
+                {language === 'hi'
+                  ? 'यह डिजिटल वाउचर दोनों पक्षों के आपसी सत्यापन की पुष्टि करता है और SHRAMIKK ऑडिट ट्रेल में सुरक्षित दर्ज है।'
+                  : 'This digital settlement voucher confirms full mutual sign-off and is stored permanently in the SHRAMIKK Neon PostgreSQL audit trail.'}
               </div>
 
               <div className="flex items-center gap-2 pt-2">
