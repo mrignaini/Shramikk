@@ -638,8 +638,20 @@ export const translations: Translations = {
     en: 'Welcome',
   },
   authWelcomeSub: {
-    hi: 'अपना मोबाइल नंबर दर्ज करें',
-    en: 'Enter your mobile number to get started',
+    hi: 'अपना ईमेल पता दर्ज करें',
+    en: 'Enter your email address to get started',
+  },
+  authEmailLabel: {
+    hi: 'ईमेल पता',
+    en: 'Email Address',
+  },
+  authEmailPlaceholder: {
+    hi: 'worker@shramikk.in',
+    en: 'name@example.com',
+  },
+  errValidEmail: {
+    hi: 'कृपया एक मान्य ईमेल पता दर्ज करें (उदा. ramesh@shramikk.in)',
+    en: 'Please enter a valid email address (e.g. name@example.com)',
   },
   authMobileLabel: {
     hi: 'मोबाइल नंबर',
@@ -660,32 +672,36 @@ export const translations: Translations = {
 
   // Auth Flow – OTP Step
   otpTitle: {
-    hi: 'OTP सत्यापन',
-    en: 'OTP Verification',
+    hi: 'ईमेल सत्यापन कोड',
+    en: 'Email Verification Code',
   },
   otpSub: {
-    hi: 'आपके मोबाइल नंबर पर भेजा गया 6-अंकीय कोड दर्ज करें',
-    en: 'Enter the 6-digit code sent to your mobile number',
+    hi: 'आपके ईमेल पर भेजा गया 6-अंकीय कोड दर्ज करें:',
+    en: 'Enter the 6-digit verification code sent to your email:',
   },
   otpVerifyBtn: {
     hi: 'सत्यापित करें',
-    en: 'Verify',
+    en: 'Verify & Proceed',
   },
   otpResendBtn: {
     hi: 'कोड दोबारा भेजें',
     en: 'Resend Code',
   },
   otpChangeNumber: {
-    hi: 'नंबर बदलें',
-    en: 'Change Number',
+    hi: 'ईमेल बदलें',
+    en: 'Change Email',
+  },
+  otpChangeEmail: {
+    hi: 'ईमेल बदलें',
+    en: 'Change Email',
   },
   otpDemoHint: {
-    hi: 'डेमो OTP: 123456',
-    en: 'Demo OTP: 123456',
+    hi: 'डेमो वेरिफिकेशन कोड: 123456',
+    en: 'Demo Verification Code: 123456',
   },
   otpErrorInvalid: {
-    hi: 'अमान्य OTP। कृपया पुनः प्रयास करें।',
-    en: 'Invalid OTP. Please try again.',
+    hi: 'अमान्य कोड। कृपया 123456 दर्ज करें।',
+    en: 'Invalid verification code. Please enter 123456.',
   },
 
   // Auth Flow – Language Selection
@@ -873,6 +889,10 @@ export const translations: Translations = {
     hi: 'सत्यापित फ़ोन',
     en: 'Verified Phone',
   },
+  verifiedEmailLabel: {
+    hi: 'सत्यापित ईमेल',
+    en: 'Verified Email',
+  },
   stepBasicInfo: {
     hi: 'बुनियादी जानकारी',
     en: 'Basic Info',
@@ -957,36 +977,244 @@ export const translations: Translations = {
     hi: 'आपकी नियोक्ता प्रोफ़ाइल सफलतापूर्वक बनाई गई है।',
     en: 'Your hirer profile has been created successfully.',
   },
+
+  // Navbar & Global Actions
+  navSignIn: {
+    hi: 'साइन इन',
+    en: 'Sign In',
+  },
+  navRegister: {
+    hi: 'रजिस्टर करें',
+    en: 'Register',
+  },
+  navLogout: {
+    hi: 'लॉग आउट',
+    en: 'Logout',
+  },
+  escrowPillLabel: {
+    hi: 'एस्क्रो सुरक्षित',
+    en: 'Escrow',
+  },
+  escrowGuaranteed: {
+    hi: '100% सुरक्षित वेतन',
+    en: '100% Guaranteed',
+  },
+  adminPortalLabel: {
+    hi: 'एडमिन पोर्टल',
+    en: 'Admin Portal',
+  },
+  workerDashboardNav: {
+    hi: 'कामगार हब',
+    en: 'Worker Hub',
+  },
+  hirerDashboardNav: {
+    hi: 'नियोक्ता हब',
+    en: 'Hirer Hub',
+  },
+  adminDashboardNav: {
+    hi: 'एडमिन हब',
+    en: 'Admin Hub',
+  },
+
+  // Production Logout Modal
+  logoutModalTitle: {
+    hi: 'क्या आप लॉग आउट करना चाहते हैं?',
+    en: 'Sign out of SHRAMIKK?',
+  },
+  logoutModalDesc: {
+    hi: 'आपका सत्र सुरक्षित रूप से समाप्त हो जाएगा। कार्य जारी रखने के लिए आप कभी भी पुनः साइन इन कर सकते हैं।',
+    en: 'Your active session will be securely ended. You can sign back in anytime to continue.',
+  },
+  logoutCancelBtn: {
+    hi: 'रद्द करें (Cancel)',
+    en: 'Cancel',
+  },
+  logoutConfirmBtn: {
+    hi: 'सुरक्षित लॉग आउट (Sign Out)',
+    en: 'Sign Out',
+  },
+
+  // Unified Single Sign-In / Register Page
+  authPageHeaderTitle: {
+    hi: 'SHRAMIKK में आपका स्वागत है',
+    en: 'Welcome to SHRAMIKK',
+  },
+  authPageHeaderSub: {
+    hi: 'लेबर चौक से डिजिटल पहचान तक — भारत का विश्वसनीय कामगार नेटवर्क',
+    en: 'From Labour Chowk to Digital Identity — India\'s trusted blue-collar work network',
+  },
+  authTabSignIn: {
+    hi: 'साइन इन (Sign In)',
+    en: 'Sign In',
+  },
+  authTabRegister: {
+    hi: 'नया खाता बनाएं (Create Account)',
+    en: 'Create Account',
+  },
+  authShowcaseBadge: {
+    hi: 'प्रोजेक्ट शोकेस • 1-क्लिक त्वरित लॉगिन',
+    en: 'Project Showcase • 1-Click Fast Login',
+  },
+  authShowcaseDemo: {
+    hi: 'डेमो क्रेडेंशियल्स',
+    en: 'Demo Credentials',
+  },
+  authWorkerBadge: {
+    hi: 'कामगार',
+    en: 'Worker',
+  },
+  authHirerBadge: {
+    hi: 'ठेकेदार',
+    en: 'Contractor',
+  },
+  authAdminBadge: {
+    hi: 'एडमिन',
+    en: 'Admin',
+  },
+  authFastLoginBtn: {
+    hi: 'लॉगिन करें →',
+    en: 'Sign In →',
+  },
+  authFastAdminBtn: {
+    hi: 'पोर्टल खोलें →',
+    en: 'Open Portal →',
+  },
+  authUserLoginTab: {
+    hi: 'यूज़र लॉगिन (कामगार / ठेकेदार)',
+    en: 'User Login (Worker / Contractor)',
+  },
+  authAdminTab: {
+    hi: 'एडमिन पोर्टल (Admin Portal)',
+    en: 'Admin Portal',
+  },
+  authEmailOrMobileLabel: {
+    hi: 'ईमेल पता या मोबाइल नंबर',
+    en: 'Email Address or Mobile Number',
+  },
+  authAdminEmailLabel: {
+    hi: 'एडमिन ईमेल पता',
+    en: 'Admin Email Address',
+  },
+  authPasswordLabel: {
+    hi: 'पासवर्ड',
+    en: 'Password',
+  },
+  authSignInBtn: {
+    hi: 'साइन इन करें',
+    en: 'Sign In',
+  },
+  authAuthenticating: {
+    hi: 'सत्यापन हो रहा है...',
+    en: 'Authenticating...',
+  },
+  authNeedAccountPrompt: {
+    hi: 'नया खाता बनाना चाहते हैं?',
+    en: 'Need a new account?',
+  },
+  authCreateAccountLink: {
+    hi: 'यहाँ नया खाता बनाएं →',
+    en: 'Create an account here →',
+  },
+  authAlreadyHaveAccountPrompt: {
+    hi: 'पहले से पंजीकृत खाता है?',
+    en: 'Already have an account?',
+  },
+  authSignInLink: {
+    hi: 'यहाँ साइन इन करें →',
+    en: 'Sign In here →',
+  },
+  authSelectRoleLabel: {
+    hi: 'अपनी भूमिका चुनें',
+    en: 'Select Your Role',
+  },
+  authWorkerRoleDesc: {
+    hi: 'राजमिस्त्री, पेंटर, हेल्पर आदि',
+    en: 'Mason, Painter, Helper, etc.',
+  },
+  authHirerRoleDesc: {
+    hi: 'ठेकेदार, बिल्डर या मकान मालिक',
+    en: 'Contractor, Builder or Homeowner',
+  },
+  authFullNameLabel: {
+    hi: 'पूरा नाम *',
+    en: 'Full Name *',
+  },
+  authTradeSkillLabel: {
+    hi: 'मुख्य ट्रेड कौशल *',
+    en: 'Primary Trade Skill *',
+  },
+  authBusinessCompanyLabel: {
+    hi: 'व्यवसाय / कंपनी श्रेणी *',
+    en: 'Business / Contractor Type *',
+  },
+  authCityLabel: {
+    hi: 'शहर / जिला *',
+    en: 'City / District *',
+  },
+  authCreatePasswordLabel: {
+    hi: 'पासवर्ड बनाएं (कम से कम 6 अक्षर) *',
+    en: 'Password (min 6 characters) *',
+  },
+  authRegisterSubmitBtn: {
+    hi: 'पंजीकरण पूरा करें',
+    en: 'Complete Registration',
+  },
+  authCreatingAccount: {
+    hi: 'खाता बनाया जा रहा है...',
+    en: 'Creating Account...',
+  },
 };
 
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string) => string;
+  t: (key: string, fallback?: string) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>('hi');
+  const [language, setLanguage] = useState<Language>(() => {
+    try {
+      const saved = localStorage.getItem('shramikk_lang') as Language;
+      if (saved === 'hi' || saved === 'en') {
+        return saved;
+      }
+    } catch {
+      // fallback
+    }
+    return 'en';
+  });
 
   useEffect(() => {
-    const saved = localStorage.getItem('shramikk_lang') as Language;
-    if (saved && (saved === 'hi' || saved === 'en')) {
-      setLanguage(saved);
+    try {
+      document.documentElement.lang = language;
+      localStorage.setItem('shramikk_lang', language);
+      document.cookie = `shramikk_lang=${language}; path=/; max-age=31536000; SameSite=Lax`;
+    } catch {
+      // ignore
     }
-  }, []);
+  }, [language]);
 
   const changeLanguage = (lang: Language) => {
     setLanguage(lang);
-    localStorage.setItem('shramikk_lang', lang);
+    try {
+      localStorage.setItem('shramikk_lang', lang);
+      document.cookie = `shramikk_lang=${lang}; path=/; max-age=31536000; SameSite=Lax`;
+      document.documentElement.lang = lang;
+    } catch {
+      // ignore
+    }
   };
 
-  const t = (key: string): string => {
+  const t = (key: string, fallback?: string): string => {
     if (translations[key]) {
-      return translations[key][language] || translations[key]['hi'] || key;
+      const val = translations[key][language];
+      if (val) return val;
+      const enVal = translations[key]['en'];
+      if (enVal) return enVal;
     }
-    return key;
+    return fallback || key;
   };
 
   return (

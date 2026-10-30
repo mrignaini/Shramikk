@@ -24,41 +24,43 @@ export const LanguageSelector: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative inline-block text-left" ref={dropdownRef}>
+    <div className="relative inline-block text-left shrink-0" ref={dropdownRef}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 hover:border-slate-300 focus:outline-none transition-all shadow-xs"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200/90 bg-white hover:bg-slate-50 text-xs sm:text-sm font-semibold text-slate-700 hover:border-slate-300 focus:outline-none transition-all shadow-2xs shrink-0 cursor-pointer"
         aria-expanded={isOpen}
+        aria-label="Language selector"
       >
-        <Globe className="w-4 h-4 text-slate-500" />
-        <span>{language === 'hi' ? 'हिंदी' : 'English'}</span>
-        <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        <Globe className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-600 shrink-0" />
+        <span className="font-bold text-slate-800">{language === 'hi' ? 'हिंदी' : 'EN'}</span>
+        <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-44 rounded-xl bg-white shadow-xl ring-1 ring-black/5 z-50 py-1.5 border border-slate-100 animate-in fade-in zoom-in-95 duration-100">
-          <div className="px-3 py-1.5 text-xs font-semibold text-slate-400 border-b border-slate-100">
+        <div className="absolute right-0 sm:left-0 sm:right-auto mt-2 w-48 rounded-2xl bg-white shadow-xl ring-1 ring-slate-900/10 z-50 py-2 border border-slate-100 animate-in fade-in zoom-in-95 duration-100">
+          <div className="px-3.5 py-1.5 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
             भाषा चुनें / Select Language
           </div>
           {languages.map((item) => (
             <button
               key={item.code}
+              type="button"
               onClick={() => {
                 setLanguage(item.code);
                 setIsOpen(false);
               }}
-              className={`w-full text-left px-3.5 py-2 text-sm flex items-center justify-between transition-colors ${
+              className={`w-full text-left px-3.5 py-2.5 text-xs sm:text-sm flex items-center justify-between transition-colors cursor-pointer ${
                 language === item.code
-                  ? 'bg-amber-50/80 text-amber-900 font-semibold'
-                  : 'text-slate-700 hover:bg-slate-50'
+                  ? 'bg-amber-50 text-amber-950 font-bold'
+                  : 'text-slate-700 hover:bg-slate-50 font-medium'
               }`}
             >
               <div>
-                <span>{item.label}</span>
-                <span className="text-xs text-slate-400 ml-1.5">({item.subLabel})</span>
+                <span className="font-bold">{item.label}</span>
+                <span className="text-xs text-slate-400 ml-1.5 font-normal">({item.subLabel})</span>
               </div>
-              {language === item.code && <Check className="w-4 h-4 text-amber-600" />}
+              {language === item.code && <Check className="w-4 h-4 text-amber-600 stroke-[2.5]" />}
             </button>
           ))}
         </div>

@@ -1,6 +1,8 @@
 import React from 'react';
-import { AuthFlow } from './auth/AuthFlow';
+import { LoginPage } from './LoginPage';
 
 export const RegisterPage: React.FC = () => {
-  return <AuthFlow />;
+  return <LoginPage initialMode="register" />;
 };
+
+export default RegisterPage;

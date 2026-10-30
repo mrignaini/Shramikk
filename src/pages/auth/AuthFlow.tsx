@@ -23,6 +23,7 @@ import {
   Check,
   AlertCircle,
   Loader2,
+  Mail,
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
@@ -30,7 +31,7 @@ import type { Language, SkillCategory } from '../../types';
 import type { WorkerProfileData, HirerProfileData } from '../../context/AuthContext';
 
 type AuthStep =
-  | 'mobile'
+  | 'email'
   | 'otp'
   | 'language'
   | 'role'
@@ -49,6 +50,7 @@ type AuthStep =
 export const AuthFlow: React.FC = () => {
   const { t, language, setLanguage } = useLanguage();
   const {
+    loginWithEmail,
     loginWithMobile,
     verifyOtp,
     setAuthLanguage,
@@ -59,7 +61,8 @@ export const AuthFlow: React.FC = () => {
   const navigate = useNavigate();
 
   // State
-  const [currentStep, setCurrentStep] = useState<AuthStep>('mobile');
+  const [currentStep, setCurrentStep] = useState<AuthStep>('email');
+  const [email, setEmail] = useState('ramesh.kumar@shramikk.in');
   const [mobileNumber, setMobileNumber] = useState('9876543210');
   const [otpDigits, setOtpDigits] = useState(['1', '2', '3', '4', '5', '6']);
   const [otpError, setOtpError] = useState('');
@@ -110,15 +113,17 @@ export const AuthFlow: React.FC = () => {
     }
   };
 
-  // Submit Mobile
-  const handleMobileSubmit = (e: React.FormEvent) => {
+  // Submit Email
+  const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (mobileNumber.length !== 10) {
-      setFormError(t('errValidMobile'));
+    const trimmed = email.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmed)) {
+      setFormError(t('errValidEmail'));
       return;
     }
     setFormError('');
-    loginWithMobile(mobileNumber);
+    loginWithEmail(trimmed);
     setCurrentStep('otp');
     setResendTimer(30);
   };
@@ -179,6 +184,7 @@ export const AuthFlow: React.FC = () => {
     const profile: WorkerProfileData = {
       fullName: workerName,
       phone: `+91 ${mobileNumber}`,
+      email: email,
       avatar: workerAvatar,
       skills: selectedSkills,
       experience,
@@ -204,6 +210,7 @@ export const AuthFlow: React.FC = () => {
     const profile: HirerProfileData = {
       fullName: hirerName,
       phone: `+91 ${mobileNumber}`,
+      email: email,
       hirerType,
       city: hirerCity,
       locality: hirerArea,
@@ -310,10 +317,10 @@ export const AuthFlow: React.FC = () => {
           </div>
 
           {/* Back button if past first step */}
-          {currentStep !== 'mobile' && !currentStep.includes('success') && (
+          {currentStep !== 'email' && !currentStep.includes('success') && (
             <button
               onClick={() => {
-                if (currentStep === 'otp') setCurrentStep('mobile');
+                if (currentStep === 'otp') setCurrentStep('email');
                 else if (currentStep === 'language') setCurrentStep('otp');
                 else if (currentStep === 'role') setCurrentStep('language');
                 else if (currentStep === 'worker_basic') setCurrentStep('role');
@@ -335,13 +342,13 @@ export const AuthFlow: React.FC = () => {
         </div>
 
         {/* ========================================================================= */}
-        {/* STEP 1: MOBILE NUMBER INPUT */}
+        {/* STEP 1: EMAIL ADDRESS INPUT */}
         {/* ========================================================================= */}
-        {currentStep === 'mobile' && (
+        {currentStep === 'email' && (
           <div className="space-y-6 animate-in fade-in duration-200">
             <div>
               <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-extrabold tracking-wide uppercase">
-                {language === 'hi' ? 'सुरक्षित लॉगिन / रजिस्टर' : 'Secure Login / Register'}
+                {language === 'hi' ? 'सुरक्षित ईमेल लॉगिन / रजिस्टर' : 'Secure Email Login / Register'}
               </span>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0B132B] mt-2 tracking-tight">
                 {t('authWelcomeTitle')}
@@ -351,27 +358,24 @@ export const AuthFlow: React.FC = () => {
               </p>
             </div>
 
-            <form onSubmit={handleMobileSubmit} className="space-y-5">
+            <form onSubmit={handleEmailSubmit} className="space-y-5">
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  {t('authMobileLabel')}
+                  {t('authEmailLabel')}
                 </label>
                 <div className="relative flex items-center">
-                  <div className="absolute left-3.5 flex items-center gap-1.5 font-bold text-sm text-slate-700 pointer-events-none">
-                    <span>🇮🇳</span>
-                    <span>+91</span>
-                    <span className="text-slate-300">|</span>
+                  <div className="absolute left-3.5 flex items-center gap-1.5 text-slate-400 pointer-events-none">
+                    <Mail className="w-5 h-5 text-amber-600" />
                   </div>
                   <input
-                    type="tel"
-                    maxLength={10}
-                    value={mobileNumber}
+                    type="email"
+                    value={email}
                     onChange={(e) => {
-                      setMobileNumber(e.target.value.replace(/\D/g, ''));
+                      setEmail(e.target.value);
                       setFormError('');
                     }}
-                    placeholder={t('authMobilePlaceholder')}
-                    className="w-full pl-20 pr-4 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-base font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs"
+                    placeholder={t('authEmailPlaceholder')}
+                    className="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm sm:text-base font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs"
                     required
                     autoFocus
                   />
@@ -386,7 +390,7 @@ export const AuthFlow: React.FC = () => {
 
               <button
                 type="submit"
-                className="w-full py-4 rounded-2xl bg-[#EAA228] hover:bg-[#DE9419] text-slate-950 font-extrabold text-base shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                className="w-full py-4 rounded-2xl bg-[#EAA228] hover:bg-[#DE9419] text-slate-950 font-extrabold text-base shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>{t('authContinueBtn')}</span>
                 <ArrowRight className="w-4 h-4 stroke-[2.5]" />
@@ -414,13 +418,13 @@ export const AuthFlow: React.FC = () => {
                 {t('otpTitle')}
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 mt-1">
-                {t('otpSub')} <strong>+91 {mobileNumber}</strong>
+                {t('otpSub')} <strong className="text-slate-900">{email}</strong>
                 <button
                   type="button"
-                  onClick={() => setCurrentStep('mobile')}
-                  className="ml-2 text-xs font-bold text-amber-700 hover:underline"
+                  onClick={() => setCurrentStep('email')}
+                  className="ml-2 text-xs font-bold text-amber-700 hover:underline cursor-pointer"
                 >
-                  ({t('otpChangeNumber')})
+                  ({t('otpChangeEmail')})
                 </button>
               </p>
             </div>
@@ -704,10 +708,13 @@ export const AuthFlow: React.FC = () => {
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    {t('verifiedPhoneLabel')}
+                    {t('verifiedEmailLabel')}
                   </label>
                   <div className="px-4 py-3.5 rounded-2xl bg-emerald-50/60 border border-emerald-200 flex items-center justify-between text-sm font-bold text-emerald-950">
-                    <span>+91 {mobileNumber}</span>
+                    <span className="flex items-center gap-2">
+                      <Mail className="w-4 h-4 text-emerald-700" />
+                      <span>{email}</span>
+                    </span>
                     <span className="text-xs text-emerald-700 flex items-center gap-1 font-semibold">
                       <CheckCircle2 className="w-3.5 h-3.5" />
                       सत्यापित
@@ -967,7 +974,10 @@ export const AuthFlow: React.FC = () => {
                     </div>
                     <div>
                       <div className="text-base font-extrabold text-slate-900">{workerName}</div>
-                      <div className="text-slate-500">+91 {mobileNumber}</div>
+                      <div className="text-slate-500 flex items-center gap-1 text-xs mt-0.5">
+                        <Mail className="w-3.5 h-3.5 text-slate-400" />
+                        <span>{email}</span>
+                      </div>
                     </div>
                   </div>
 
@@ -1083,10 +1093,13 @@ export const AuthFlow: React.FC = () => {
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    {t('verifiedPhoneLabel')}
+                    {t('verifiedEmailLabel')}
                   </label>
                   <div className="px-4 py-3.5 rounded-2xl bg-emerald-50/60 border border-emerald-200 flex items-center justify-between text-sm font-bold text-emerald-950">
-                    <span>+91 {mobileNumber}</span>
+                    <span className="flex items-center gap-2">
+                      <Mail className="w-4 h-4 text-emerald-700" />
+                      <span>{email}</span>
+                    </span>
                     <span className="text-xs text-emerald-700 flex items-center gap-1 font-semibold">
                       <CheckCircle2 className="w-3.5 h-3.5" />
                       सत्यापित
@@ -1229,8 +1242,11 @@ export const AuthFlow: React.FC = () => {
                     <span className="font-bold text-slate-900">{hirerArea}, {hirerCity}</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 text-[11px] block">सत्यापित मोबाइल / Mobile</span>
-                    <span className="font-bold text-slate-900">+91 {mobileNumber}</span>
+                    <span className="text-slate-400 text-[11px] block">{t('verifiedEmailLabel')}</span>
+                    <span className="font-bold text-slate-900 flex items-center gap-1">
+                      <Mail className="w-3.5 h-3.5 text-slate-400" />
+                      <span>{email}</span>
+                    </span>
                   </div>
                 </div>
 
